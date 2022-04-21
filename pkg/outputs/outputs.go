@@ -3,6 +3,7 @@ package outputs
 import (
 	"errors"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
+	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/numbers"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"periph.io/x/conn/v3/gpio"
@@ -54,6 +55,11 @@ var OutputMaps = struct {
 var UO1 = gpioreg.ByName(OutputMaps.UO1.Pin)
 var UO2 = gpioreg.ByName(OutputMaps.UO2.Pin)
 var UO3 = gpioreg.ByName(OutputMaps.UO3.Pin)
+var UO4 = gpioreg.ByName(OutputMaps.UO4.Pin)
+var UO5 = gpioreg.ByName(OutputMaps.UO5.Pin)
+var UO6 = gpioreg.ByName(OutputMaps.UO6.Pin)
+var DO1 = gpioreg.ByName(OutputMaps.DO1.Pin)
+var DO2 = gpioreg.ByName(OutputMaps.DO2.Pin)
 
 type Body struct {
 	IONum       string  `json:"io_num"`
@@ -73,6 +79,18 @@ func (inst *Outputs) pinSelect() gpio.PinIO {
 		return UO1
 	} else if io == OutputMaps.UO2.IONum {
 		return UO2
+	} else if io == OutputMaps.UO3.IONum {
+		return UO3
+	} else if io == OutputMaps.UO4.IONum {
+		return UO4
+	} else if io == OutputMaps.UO5.IONum {
+		return UO5
+	} else if io == OutputMaps.UO6.IONum {
+		return UO6
+	} else if io == OutputMaps.DO1.IONum {
+		return DO1
+	} else if io == OutputMaps.DO2.IONum {
+		return DO2
 	}
 	return nil
 }
@@ -84,7 +102,7 @@ func (inst *Outputs) Write(ctx *gin.Context) {
 		return
 	}
 	inst.IONum = body.IONum
-	inst.Value = body.Value
+	inst.Value = numbers.Scale(body.Value, 0, 100, 0, 1)
 	if nils.BoolIsNil(body.Debug) {
 		inst.TestMode = true
 	}
@@ -97,12 +115,23 @@ func (inst *Outputs) Write(ctx *gin.Context) {
 
 func (inst *Outputs) write() (ok bool, err error) {
 	var val = 16777216 * inst.Value
+	io := inst.IONum
 	if inst.TestMode {
 		log.Infoln("rubix.io.outputs.write() in-debug io-name:", inst.IONum, "value:", val)
 	} else {
 		pin := inst.pinSelect()
-		if inst.WriteAsBool {
-			log.Infoln("rubix.io.outputs.write() write as BOOL io-name:", inst.IONum, "value:", val)
+		if io == OutputMaps.DO1.IONum || io == OutputMaps.DO2.IONum {
+			if val >= 1 {
+				log.Infoln("rubix.io.outputs.write() write as BOOL write High io-name:", inst.IONum, "value:", val)
+				if err := pin.Out(gpio.High); err != nil {
+					log.Fatal(err)
+				}
+			} else {
+				log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", val)
+				if err := pin.Out(gpio.Low); err != nil {
+					log.Fatal(err)
+				}
+			}
 		} else {
 			log.Infoln("rubix.io.outputs.write() write as PWM io-name:", inst.IONum, "value:", val)
 			if err := pin.PWM(gpio.Duty(val), 10000*physic.Hertz); err != nil {
@@ -110,7 +139,6 @@ func (inst *Outputs) write() (ok bool, err error) {
 				return false, err
 			}
 		}
-
 	}
 	return true, nil
 }
@@ -118,9 +146,8 @@ func (inst *Outputs) write() (ok bool, err error) {
 // HaltPin disable the gpio
 func (inst *Outputs) haltPin(pin gpio.PinIO) {
 	if inst.TestMode {
-		log.Infoln("rubix.io.outputs.haltPin() in-debug io-name:", inst.IONum)
 	} else {
-		log.Infoln("rubix.io.outputs.haltPin() io-name:", inst.IONum)
+		log.Infoln("rubix.io.outputs.haltPin() io-name:", pin.Name())
 		if err := pin.Halt(); err != nil {
 			log.Errorln(err)
 		}
@@ -140,10 +167,37 @@ func (inst *Outputs) HaltPins() error {
 		}
 		err = UO2.Halt()
 		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() halt UO2")
 			return err
 		}
 		err = UO3.Halt()
 		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() halt UO3")
+			return err
+		}
+		err = UO4.Halt()
+		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() halt UO4")
+			return err
+		}
+		err = UO5.Halt()
+		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() halt UO5")
+			return err
+		}
+		err = UO6.Halt()
+		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() halt UO6")
+			return err
+		}
+		err = DO1.Halt()
+		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() halt DO1")
+			return err
+		}
+		err = DO2.Halt()
+		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() halt DO2")
 			return err
 		}
 
@@ -161,6 +215,12 @@ func (inst *Outputs) Init() error {
 		}
 		UO1 = gpioreg.ByName(OutputMaps.UO1.Pin)
 		UO2 = gpioreg.ByName(OutputMaps.UO2.Pin)
+		UO3 = gpioreg.ByName(OutputMaps.UO3.Pin)
+		UO4 = gpioreg.ByName(OutputMaps.UO4.Pin)
+		UO5 = gpioreg.ByName(OutputMaps.UO5.Pin)
+		UO6 = gpioreg.ByName(OutputMaps.UO6.Pin)
+		DO1 = gpioreg.ByName(OutputMaps.DO1.Pin)
+		DO1 = gpioreg.ByName(OutputMaps.DO2.Pin)
 		if UO1 == nil {
 			log.Errorln("rubix.io.outputs.Init() failed to init UO1")
 			return errors.New("failed to init pin")
@@ -183,7 +243,6 @@ func reposeHandler(body interface{}, err error, ctx *gin.Context) {
 			} else {
 				ctx.JSON(404, Message{Message: err.Error()})
 			}
-
 		}
 	} else {
 		ctx.JSON(200, body)
