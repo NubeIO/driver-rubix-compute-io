@@ -220,7 +220,7 @@ func (inst *Outputs) Init() error {
 		UO5 = gpioreg.ByName(OutputMaps.UO5.Pin)
 		UO6 = gpioreg.ByName(OutputMaps.UO6.Pin)
 		DO1 = gpioreg.ByName(OutputMaps.DO1.Pin)
-		DO1 = gpioreg.ByName(OutputMaps.DO2.Pin)
+		DO2 = gpioreg.ByName(OutputMaps.DO2.Pin)
 		if UO1 == nil {
 			log.Errorln("rubix.io.outputs.Init() failed to init UO1")
 			return errors.New("failed to init pin")
