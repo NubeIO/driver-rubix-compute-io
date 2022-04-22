@@ -4,7 +4,6 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	gpio "github.com/stianeikeland/go-rpio/v4"
-	"time"
 )
 
 type Outputs struct {
@@ -100,7 +99,7 @@ func (inst *Outputs) write() (ok bool, err error) {
 			pin.Freq(pmwClockFrequency)
 			fmt.Println(uint32(val), "VALUE------------------")
 			pin.DutyCycle(uint32(val), cycleLength)
-			time.Sleep(3 * time.Second)
+			//time.Sleep(3 * time.Second)
 
 			//if err := pin.PWM(gpio.Duty(val), 8000*physic.Hertz); err != nil {
 			//	log.Errorln(err)
