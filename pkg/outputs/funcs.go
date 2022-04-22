@@ -1,6 +1,7 @@
 package outputs
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	gpio "github.com/stianeikeland/go-rpio/v4"
 )
@@ -20,10 +21,12 @@ func getBodyBulk(ctx *gin.Context) (dto []BulkWrite, err error) {
 }
 
 func (inst *Outputs) pinSelect() gpio.Pin {
+	fmt.Println(88888)
 	io := inst.IONum
 	if io == OutputMaps.UO1.IONum {
 		return UO3
 	} else if io == OutputMaps.UO3.IONum {
+		fmt.Println(88888)
 		return UO3
 	} else if io == OutputMaps.UO5.IONum {
 		return UO5

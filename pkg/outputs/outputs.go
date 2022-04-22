@@ -135,6 +135,7 @@ func (inst *Outputs) Init() error {
 	if inst.TestMode {
 
 	} else {
+		log.Println("rubix.io.outputs.Init() INIT")
 		if err := rpio.Open(); err != nil {
 			log.Fatalf("Error opening GPIO: %s", err.Error())
 		}
@@ -145,10 +146,10 @@ func (inst *Outputs) Init() error {
 			}
 		}()
 		//DOs
-		//DO1 = rpio.Pin(22)
-		//DO1.Output()
-		//DO2 = rpio.Pin(23)
-		//DO2.Output()
+		DO1 = rpio.Pin(22)
+		DO1.Output()
+		DO2 = rpio.Pin(23)
+		DO2.Output()
 
 		//PWMs
 		const cycleLength = 100
@@ -157,6 +158,9 @@ func (inst *Outputs) Init() error {
 		UO3.Output()
 		UO3.Pwm()
 		UO3.Freq(pmwClockFrequency)
+		fmt.Println(999)
+		fmt.Println(999)
+		fmt.Println(UO3)
 
 		UO5 = rpio.Pin(13)
 		UO5.Output()
