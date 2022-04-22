@@ -32,6 +32,7 @@ func (inst *Outputs) BulkWrite(ctx *gin.Context) {
 		inst.valueOriginal = writeValue
 		inst.IONum = io.IONum
 		write, err := inst.write()
+		fmt.Println(write, err, inst.IONum)
 		if err != nil {
 			reposeHandler(write, err, ctx)
 			return

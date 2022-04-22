@@ -50,7 +50,6 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 			reposeHandler(nil, err, ctx)
 			return
 		}
-		log.Println("bytes", bytes)
 		data := inst.decodeData(bytes)
 		reposeHandler(data, nil, ctx)
 	}
@@ -63,7 +62,6 @@ func getResistance(data uint16) (resistance float64) {
 		r1 := 10000.0
 		r2 := (out * r1) / (vin - out)
 		resistance = r2
-		log.Println("resistance", resistance)
 	}
 	return
 }
