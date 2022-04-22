@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/config"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/inputs"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/outputs"
@@ -36,8 +37,11 @@ func main() {
 	router.POST("/api/write", output.Write)
 	router.GET("/api/inputs", input.ReadAll)
 
+	port := conf.Server.Port
+	addr := fmt.Sprintf(":%d", port)
+
 	server := &http.Server{
-		Addr:    ":5001",
+		Addr:    addr,
 		Handler: router,
 	}
 
@@ -46,22 +50,22 @@ func main() {
 
 	go func() {
 		<-quit
-		log.Println("receive interrupt signal")
+		log.Infoln("rubix.io.main() interrupt signal")
 		if err := server.Close(); err != nil {
-			log.Fatal("Server Close:", err)
+			log.Fatal("rubix.io.main() Server Close", err)
 		}
 	}()
 
 	if err := server.ListenAndServe(); err != nil {
 		if err == http.ErrServerClosed {
-			log.Println("Server closed under request")
+			log.Infoln("rubix.io.main() Server closed as request")
 		} else {
-			log.Fatal("Server closed unexpect")
+			log.Fatal("rubix.io.main() Server unexpect Close", err)
 		}
 	}
 	err = output.HaltPins()
 	if err != nil {
 		log.Errorln("rubix.io.outputs.main() failed to halt all outputs", err)
 	}
-	log.Println("Server exiting")
+	log.Infoln("rubix.io.main() Server exiting")
 }

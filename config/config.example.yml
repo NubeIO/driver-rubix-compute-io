@@ -1,10 +1,3 @@
 server:
   address: "0.0.0.0"
-  port: 1883
-credential:
-  auth: false
-  username: "username"
-  password: "password"
-storage:
-  enablepersistence: true
-  db: "mqtt.db"
+  port: 5001

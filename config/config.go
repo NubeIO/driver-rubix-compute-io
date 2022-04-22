@@ -9,16 +9,7 @@ import (
 type Configuration struct {
 	Server struct {
 		Address string
-		Port    int `default:"1883"`
-	}
-	Credential struct {
-		Auth     bool   `default:"false"`
-		Username string `default:"admin"`
-		Password string `default:"test_admin"`
-	}
-	Storage struct {
-		EnablePersistence bool   `default:"true"`
-		DB                string `default:"mqtt.db"`
+		Port    int `default:"5001"`
 	}
 	Location struct {
 		GlobalDir string `default:"./"`
@@ -45,21 +36,17 @@ func CreateApp() *Configuration {
 }
 
 func (conf *Configuration) Parse() *Configuration {
-	port := flag.Int("p", 1883, "Port")
+	port := flag.Int("p", 5001, "Port")
 	globalDir := flag.String("g", "./", "Global Directory")
 	dataDir := flag.String("d", "data", "Data Directory")
 	configDir := flag.String("c", "config", "Config Directory")
 	prod := flag.Bool("prod", false, "Deployment Mode")
-	auth := flag.Bool("auth", false, "enable mqtt auth")
-	password := flag.String("password", "test_password", "auth password")
 	flag.Parse()
 	conf.Server.Port = *port
 	conf.Location.GlobalDir = *globalDir
 	conf.Location.DataDir = *dataDir
 	conf.Location.ConfigDir = *configDir
 	conf.Prod = *prod
-	conf.Credential.Auth = *auth
-	conf.Credential.Password = *password
 	return conf
 }
 
