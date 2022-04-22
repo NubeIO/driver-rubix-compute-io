@@ -31,27 +31,20 @@ type Data struct {
 	UI8 inputsMap `json:"UI8"`
 }
 
-var initBus *i2c.I2C
-
-func (inst *Inputs) InitBus() {
-	var err error
-	initBus, err = i2c.NewI2C(0x33, 1)
-	if err != nil {
-		log.Errorln(err, "NewI2C")
-		return
-	}
-
-}
-
 func (inst *Inputs) ReadAll(ctx *gin.Context) {
 	testBytes := []byte{240, 0, 249, 43, 249, 157, 241, 18, 240, 0, 240, 0, 240, 0, 240, 0}
 	if inst.TestMode {
 		data := inst.decodeData(testBytes)
 		reposeHandler(data, nil, ctx)
 	} else {
-		var err error
-		defer initBus.Close()
-		bytes, _, err := initBus.ReadRegBytes(0xF, 16)
+		bus, err := i2c.NewI2C(0x33, 1)
+		if err != nil {
+			log.Errorln(err, "NewI2C")
+			reposeHandler(nil, err, ctx)
+			return
+		}
+		defer bus.Close()
+		bytes, _, err := bus.ReadRegBytes(0xF, 16)
 		if err != nil {
 			log.Errorln(err, "ReadRegBytes")
 			reposeHandler(nil, err, ctx)
