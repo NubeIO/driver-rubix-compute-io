@@ -2,7 +2,6 @@ package inputs
 
 import (
 	"encoding/binary"
-	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nube/thermistor"
 	"github.com/d2r2/go-i2c"
 	"github.com/gin-gonic/gin"
@@ -42,6 +41,7 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 		if err != nil {
 			log.Errorln(err, "NewI2C")
 			reposeHandler(nil, err, ctx)
+			return
 		}
 
 		defer bus.Close()
@@ -152,8 +152,6 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 		}
 
 	}
-	fmt.Println(inputs)
-
 	return inputs
 }
 

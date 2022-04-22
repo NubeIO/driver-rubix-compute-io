@@ -13,10 +13,9 @@ import (
 )
 
 type Outputs struct {
-	TestMode    bool
-	IONum       string
-	Value       float64
-	WriteAsBool bool
+	TestMode bool
+	IONum    string
+	Value    float64
 }
 
 type OutputMap struct {
@@ -61,10 +60,9 @@ var DO1 = gpioreg.ByName(OutputMaps.DO1.Pin)
 var DO2 = gpioreg.ByName(OutputMaps.DO2.Pin)
 
 type Body struct {
-	IONum       string  `json:"io_num"`
-	Value       float64 `json:"value"`
-	WriteAsBool *bool   `json:"write_as_bool"`
-	Debug       *bool   `json:"debug"`
+	IONum string  `json:"io_num"`
+	Value float64 `json:"value"`
+	Debug *bool   `json:"debug"`
 }
 
 func getBody(ctx *gin.Context) (dto *Body, err error) {
@@ -104,9 +102,6 @@ func (inst *Outputs) Write(ctx *gin.Context) {
 	inst.Value = numbers.Scale(body.Value, 0, 100, 0, 1)
 	if nils.BoolIsNil(body.Debug) {
 		inst.TestMode = true
-	}
-	if nils.BoolIsNil(body.WriteAsBool) {
-		inst.WriteAsBool = true
 	}
 	ok, err := inst.write()
 	reposeHandler(ok, err, ctx)
