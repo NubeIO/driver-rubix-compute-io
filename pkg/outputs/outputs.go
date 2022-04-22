@@ -72,7 +72,7 @@ func (inst *Outputs) logWrite() {
 }
 
 func (inst *Outputs) write() (ok bool, err error) {
-	var val = 16777216 * inst.Value
+	var val = inst.Value
 	io := inst.IONum
 	if inst.TestMode {
 		inst.logWrite()
