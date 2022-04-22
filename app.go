@@ -22,7 +22,7 @@ func main() {
 	}
 
 	router := gin.Default()
-	testMode := false
+	testMode := false //when dev on your PC set this to true
 	output := &outputs.Outputs{
 		TestMode: testMode,
 	}
@@ -34,9 +34,9 @@ func main() {
 		log.Errorln("rubix.io.outputs.main() failed to init outputs")
 	}
 
-	router.POST("/api/write", output.Write)
-	router.GET("/api/write/all/:value", output.WriteAll)
-	router.GET("/api/inputs", input.ReadAll)
+	router.POST("/api/outputs", output.Write)
+	router.GET("/api/outputs/all/:value", output.WriteAll)
+	router.GET("/api/inputs/all", input.ReadAll)
 
 	port := conf.Server.Port
 	addr := fmt.Sprintf(":%d", port)
