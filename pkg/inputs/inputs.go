@@ -62,6 +62,7 @@ func getResistance(data uint16) (resistance float64) {
 		r1 := 10000.0
 		r2 := (out * r1) / (vin - out)
 		resistance = r2
+		log.Println("resistance", resistance)
 	}
 	return
 }
