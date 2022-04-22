@@ -55,6 +55,17 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 	}
 }
 
+func getResistance(data uint16) (resistance float64) {
+	vin := getVoltage(data)
+	out := float64(data) * (vin / 4096.0)
+	if !(vin-out == 0) {
+		r1 := 10000.0
+		r2 := (out * r1) / (vin - out)
+		resistance = r2
+	}
+	return
+}
+
 func getVoltage(data uint16) (voltage float64) {
 	x := 10.0 / 4096.0
 	voltage = float64(data) * x
@@ -77,7 +88,8 @@ func getAmps(data uint16) (voltage float64) {
 }
 
 func getTemp(data uint16) (temp float64) {
-	temp, err := thermistor.ResistanceToTemperature(float64(data), thermistor.T210K)
+	res := getResistance(data)
+	temp, err := thermistor.ResistanceToTemperature(res, thermistor.T210K)
 	if err != nil {
 		return -5555555
 	}
