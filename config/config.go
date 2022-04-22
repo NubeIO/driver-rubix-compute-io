@@ -16,7 +16,8 @@ type Configuration struct {
 		ConfigDir string `default:"config"`
 		DataDir   string `default:"data"`
 	}
-	Prod bool `default:"false"`
+	Prod  bool `default:"false"`
+	Debug bool `default:"false"`
 }
 
 var config *Configuration = nil
@@ -41,12 +42,14 @@ func (conf *Configuration) Parse() *Configuration {
 	dataDir := flag.String("d", "data", "Data Directory")
 	configDir := flag.String("c", "config", "Config Directory")
 	prod := flag.Bool("prod", false, "Deployment Mode")
+	debug := flag.Bool("debug", false, "test mode")
 	flag.Parse()
 	conf.Server.Port = *port
 	conf.Location.GlobalDir = *globalDir
 	conf.Location.DataDir = *dataDir
 	conf.Location.ConfigDir = *configDir
 	conf.Prod = *prod
+	conf.Debug = *debug
 	return conf
 }
 
