@@ -35,6 +35,7 @@ func main() {
 	}
 
 	router.POST("/api/write", output.Write)
+	router.GET("/api/write/all/:value", output.WriteAll)
 	router.GET("/api/inputs", input.ReadAll)
 
 	port := conf.Server.Port

@@ -44,7 +44,7 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 			return
 		}
 		defer bus.Close()
-		bytes, _, err := bus.ReadRegBytes(0xF, 16)
+		bytes, _, err := bus.ReadRegBytes(0xDA, 16)
 		if err != nil {
 			log.Errorln(err, "ReadRegBytes")
 			reposeHandler(nil, err, ctx)

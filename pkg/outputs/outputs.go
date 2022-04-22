@@ -2,8 +2,10 @@ package outputs
 
 import (
 	"errors"
+	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/numbers"
+	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/types"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"periph.io/x/conn/v3/gpio"
@@ -13,9 +15,10 @@ import (
 )
 
 type Outputs struct {
-	TestMode bool
-	IONum    string
-	Value    float64
+	TestMode      bool
+	IONum         string
+	Value         float64
+	ValueOriginal float64
 }
 
 type OutputMap struct {
@@ -65,33 +68,6 @@ type Body struct {
 	Debug *bool   `json:"debug"`
 }
 
-func getBody(ctx *gin.Context) (dto *Body, err error) {
-	err = ctx.ShouldBindJSON(&dto)
-	return dto, err
-}
-
-func (inst *Outputs) pinSelect() gpio.PinIO {
-	io := inst.IONum
-	if io == OutputMaps.UO1.IONum {
-		return UO1
-	} else if io == OutputMaps.UO2.IONum {
-		return UO2
-	} else if io == OutputMaps.UO3.IONum {
-		return UO3
-	} else if io == OutputMaps.UO4.IONum {
-		return UO4
-	} else if io == OutputMaps.UO5.IONum {
-		return UO5
-	} else if io == OutputMaps.UO6.IONum {
-		return UO6
-	} else if io == OutputMaps.DO1.IONum {
-		return DO1
-	} else if io == OutputMaps.DO2.IONum {
-		return DO2
-	}
-	return nil
-}
-
 func (inst *Outputs) Write(ctx *gin.Context) {
 	body, err := getBody(ctx)
 	if err != nil {
@@ -99,6 +75,7 @@ func (inst *Outputs) Write(ctx *gin.Context) {
 		return
 	}
 	inst.IONum = body.IONum
+	inst.ValueOriginal = body.Value
 	inst.Value = numbers.Scale(body.Value, 0, 100, 0, 1)
 	if nils.BoolIsNil(body.Debug) {
 		inst.TestMode = true
@@ -107,27 +84,51 @@ func (inst *Outputs) Write(ctx *gin.Context) {
 	reposeHandler(ok, err, ctx)
 }
 
+func (inst *Outputs) WriteAll(ctx *gin.Context) {
+	val := resolveValue(ctx)
+	writeValue := types.ToFloat64(val)
+	inst.Value = numbers.Scale(writeValue, 0, 100, 0, 1)
+	inst.ValueOriginal = writeValue
+	arr := []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}
+	for _, io := range arr {
+		inst.IONum = io
+		write, err := inst.write()
+		if err != nil {
+			reposeHandler(write, err, ctx)
+			return
+		} else {
+
+		}
+	}
+	reposeHandler(true, nil, ctx)
+}
+func (inst *Outputs) logWrite() {
+	voltage := inst.ValueOriginal / 10
+	percentage := "%" + fmt.Sprintf("%f", inst.ValueOriginal)
+	log.Infoln("rubix.io.outputs.write() io-name:", inst.IONum, "voltage:", voltage, "percentage:", percentage)
+}
+
 func (inst *Outputs) write() (ok bool, err error) {
 	var val = 16777216 * inst.Value
 	io := inst.IONum
 	if inst.TestMode {
-		log.Infoln("rubix.io.outputs.write() in-debug io-name:", inst.IONum, "value:", val)
+		inst.logWrite()
 	} else {
 		pin := inst.pinSelect()
 		if io == OutputMaps.DO1.IONum || io == OutputMaps.DO2.IONum {
 			if val >= 1 {
-				log.Infoln("rubix.io.outputs.write() write as BOOL write High io-name:", inst.IONum, "value:", val)
+				log.Infoln("rubix.io.outputs.write() write as BOOL write High io-name:", inst.IONum, "value:", true)
 				if err := pin.Out(gpio.High); err != nil {
 					log.Fatal(err)
 				}
 			} else {
-				log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", val)
+				log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", false)
 				if err := pin.Out(gpio.Low); err != nil {
 					log.Fatal(err)
 				}
 			}
 		} else {
-			log.Infoln("rubix.io.outputs.write() write as PWM io-name:", inst.IONum, "value:", val)
+			log.Infoln("rubix.io.outputs.write() write as PWM io-name:", inst.IONum, "value:", Percent(int(inst.ValueOriginal), 100))
 			if err := pin.PWM(gpio.Duty(val), 10000*physic.Hertz); err != nil {
 				log.Errorln(err)
 				return false, err
@@ -194,7 +195,6 @@ func (inst *Outputs) HaltPins() error {
 			log.Errorln("rubix.io.outputs.HaltPins() halt DO2")
 			return err
 		}
-
 	}
 	return nil
 }
@@ -225,20 +225,4 @@ func (inst *Outputs) Init() error {
 
 type Message struct {
 	Message string `json:"message"`
-}
-
-func reposeHandler(body interface{}, err error, ctx *gin.Context) {
-	if err != nil {
-		if err == nil {
-			ctx.JSON(404, Message{Message: "unknown error"})
-		} else {
-			if body != nil {
-				ctx.JSON(404, body)
-			} else {
-				ctx.JSON(404, Message{Message: err.Error()})
-			}
-		}
-	} else {
-		ctx.JSON(200, body)
-	}
 }
