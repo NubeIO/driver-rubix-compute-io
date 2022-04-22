@@ -27,6 +27,7 @@ func (inst *Outputs) pinSelect() gpio.Pin {
 		return UO3
 	} else if io == OutputMaps.UO3.IONum {
 		fmt.Println(88888)
+		fmt.Println(UO3)
 		return UO3
 	} else if io == OutputMaps.UO5.IONum {
 		return UO5

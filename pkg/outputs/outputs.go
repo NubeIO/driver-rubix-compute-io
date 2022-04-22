@@ -96,6 +96,7 @@ func (inst *Outputs) write() (ok bool, err error) {
 				pin.High()
 				log.Infoln("rubix.io.outputs.write() write as BOOL write High io-name:", inst.IONum, "value:", true)
 			} else {
+				pin.Output()
 				pin.Low()
 				log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", false)
 			}
@@ -107,7 +108,10 @@ func (inst *Outputs) write() (ok bool, err error) {
 			fmt.Println(222)
 			//fmt.Println("2222", pin)
 			fmt.Println(222)
-			fmt.Println(uint32(val), "VALUE------------------")
+			const pmwClockFrequency = 50 * cycleLength // 50kHz
+			pin.Output()
+			pin.Pwm()
+			pin.Freq(pmwClockFrequency)
 			pin.DutyCycle(uint32(val), cycleLength)
 		}
 	}
@@ -145,32 +149,6 @@ func (inst *Outputs) Init() error {
 				log.Errorln("rubix.io.outputs.Init() rpio.Close err:", err)
 			}
 		}()
-		//DOs
-		DO1 = rpio.Pin(22)
-		DO1.Output()
-		DO2 = rpio.Pin(23)
-		DO2.Output()
-
-		//PWMs
-		const cycleLength = 100
-		const pmwClockFrequency = 50 * cycleLength // 50kHz
-		UO3 = rpio.Pin(19)
-		UO3.Output()
-		UO3.Pwm()
-		UO3.Freq(pmwClockFrequency)
-		fmt.Println(999)
-		fmt.Println(999)
-		fmt.Println(UO3)
-
-		UO5 = rpio.Pin(13)
-		UO5.Output()
-		UO5.Pwm()
-		UO5.Freq(pmwClockFrequency)
-
-		UO6 = rpio.Pin(18)
-		UO6.Output()
-		UO6.Pwm()
-		UO6.Freq(pmwClockFrequency)
 
 	}
 	return nil
