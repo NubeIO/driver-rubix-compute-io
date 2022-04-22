@@ -2,6 +2,7 @@ package inputs
 
 import (
 	"encoding/binary"
+	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nube/thermistor"
 	"github.com/d2r2/go-i2c"
 	"github.com/gin-gonic/gin"
@@ -102,11 +103,13 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 
 	for i := 0; i < 16; i = i + 2 {
 		data := binary.BigEndian.Uint16(bytes[i:i+2]) & 0xFFF
-		voltage := getVoltage(data)
-		decodeBool := getBool(data)
-		decodeTemp := getTemp(data)
-		decodeAmps := getAmps(data)
+
+		fmt.Println("INPUTS", i)
 		if i == 0 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI1.Raw = data
 			inputs.UI1.Temp = decodeTemp
 			inputs.UI1.Volt = voltage
@@ -115,6 +118,10 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 
 		}
 		if i == 2 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI2.Raw = data
 			inputs.UI2.Temp = decodeTemp
 			inputs.UI2.Volt = voltage
@@ -123,6 +130,10 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 
 		}
 		if i == 4 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI3.Raw = data
 			inputs.UI3.Temp = decodeTemp
 			inputs.UI3.Volt = voltage
@@ -130,6 +141,10 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 			inputs.UI3.Bool = decodeBool
 		}
 		if i == 6 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI4.Raw = data
 			inputs.UI4.Temp = decodeTemp
 			inputs.UI4.Volt = voltage
@@ -137,6 +152,10 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 			inputs.UI4.Bool = decodeBool
 		}
 		if i == 8 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI5.Raw = data
 			inputs.UI5.Temp = decodeTemp
 			inputs.UI5.Volt = voltage
@@ -144,6 +163,10 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 			inputs.UI5.Bool = decodeBool
 		}
 		if i == 10 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI6.Raw = data
 			inputs.UI6.Temp = decodeTemp
 			inputs.UI6.Volt = voltage
@@ -151,6 +174,10 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 			inputs.UI6.Bool = decodeBool
 		}
 		if i == 12 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI7.Raw = data
 			inputs.UI7.Temp = decodeTemp
 			inputs.UI7.Volt = voltage
@@ -158,6 +185,10 @@ func (inst *Inputs) decodeData(bytes []byte) *Data {
 			inputs.UI7.Bool = decodeBool
 		}
 		if i == 14 {
+			voltage := getVoltage(data)
+			decodeBool := getBool(data)
+			decodeTemp := getTemp(data)
+			decodeAmps := getAmps(data)
 			inputs.UI8.Raw = data
 			inputs.UI8.Temp = decodeTemp
 			inputs.UI8.Volt = voltage
