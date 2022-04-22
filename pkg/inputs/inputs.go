@@ -32,24 +32,26 @@ type Data struct {
 }
 
 func (inst *Inputs) ReadAll(ctx *gin.Context) {
-	testBytes := [16]byte{240, 0, 249, 43, 249, 157, 241, 18, 240, 0, 240, 0, 240, 0, 240, 0}
-	fmt.Println(testBytes, "testBytes")
+	testBytes := []byte{240, 0, 249, 43, 249, 157, 241, 18, 240, 0, 240, 0, 240, 0, 240, 0}
 	if inst.TestMode {
 		data := inst.decodeData(testBytes)
 		reposeHandler(data, nil, ctx)
-
 	} else {
 		bus, err := i2c.NewI2C(0x33, 1)
 		if err != nil {
-			log.Fatal(err)
+			log.Errorln(err, "NewI2C")
+			reposeHandler(nil, err, ctx)
 		}
 
 		defer bus.Close()
 		bytes, _, err := bus.ReadRegBytes(0xF, 16)
 		if err != nil {
-			fmt.Println(bytes)
+			log.Errorln(err, "ReadRegBytes")
+			reposeHandler(nil, err, ctx)
 			return
 		}
+		data := inst.decodeData(bytes)
+		reposeHandler(data, nil, ctx)
 
 	}
 }
@@ -78,7 +80,7 @@ func getTemp(data uint16) (voltage float64) {
 	return
 }
 
-func (inst *Inputs) decodeData(bytes [16]byte) *Data {
+func (inst *Inputs) decodeData(bytes []byte) *Data {
 	inputs := &Data{}
 
 	for i := 0; i < 16; i = i + 2 {
