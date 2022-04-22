@@ -50,6 +50,7 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 			reposeHandler(nil, err, ctx)
 			return
 		}
+		log.Println("bytes", bytes)
 		data := inst.decodeData(bytes)
 		reposeHandler(data, nil, ctx)
 	}
