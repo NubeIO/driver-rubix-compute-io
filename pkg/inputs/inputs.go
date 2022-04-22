@@ -63,9 +63,12 @@ func getVoltage(data uint16) (voltage float64) {
 	return
 }
 
-func getBool(data uint16) (voltage float64) {
-	x := 10.0 / 4096.0
-	voltage = float64(data) * x
+func getBool(data uint16) (out float64) {
+	if data > 500 {
+		out = 0
+	} else {
+		out = 1
+	}
 	return
 }
 
