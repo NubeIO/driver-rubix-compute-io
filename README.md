@@ -1,5 +1,10 @@
 # nubeio-rubix-lib-pi-gpio-go
 
+## to start
+Needs to run as root for the PWMs to work
+```
+go build app.go && sudo ./app
+```
 
 ## api
 
@@ -18,15 +23,13 @@ http://0.0.0.0:5001/api/outputs
 
 BODY
 Options for io_num ("UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1")
-```
+```json
 {
     "io_num": "UO1",
     "value": 100,
     "debug": false
 }
 ```
-
-
 
 
 Get all input values
