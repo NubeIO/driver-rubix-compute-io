@@ -1,7 +1,6 @@
 package outputs
 
 import (
-	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/numbers"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/types"
 	"github.com/gin-gonic/gin"
@@ -25,14 +24,16 @@ type BulkWrite struct {
 
 func (inst *Outputs) BulkWrite(ctx *gin.Context) {
 	body, err := getBodyBulk(ctx)
-	fmt.Println(err)
+	if err != nil {
+		reposeHandler(false, err, ctx)
+		return
+	}
 	for _, io := range body {
 		writeValue := types.ToFloat64(io.Value)
 		inst.Value = numbers.Scale(writeValue, 0, 100, 0, 1)
 		inst.valueOriginal = writeValue
 		inst.IONum = io.IONum
 		write, err := inst.write()
-		fmt.Println(write, err, inst.IONum)
 		if err != nil {
 			reposeHandler(write, err, ctx)
 			return

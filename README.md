@@ -27,11 +27,11 @@ Options for io_num ("UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1")
 ```json
 [
   {
-    "IO":"UO1",
+    "IONum":"UO1",
     "value":22.2
   },
   {
-    "IO":"UO2",
+    "IONum":"UO2",
     "value":22.2
   }
 ]
