@@ -115,6 +115,9 @@ func (inst *Outputs) write() (ok bool, err error) {
 		inst.logWrite()
 	} else {
 		pin := inst.pinSelect()
+		if pin == nil {
+			return false, errors.New("no valid io num was selected try UO1 or DO1")
+		}
 		if io == OutputMaps.DO1.IONum || io == OutputMaps.DO2.IONum {
 			if val >= 1 {
 				log.Infoln("rubix.io.outputs.write() write as BOOL write High io-name:", inst.IONum, "value:", true)
