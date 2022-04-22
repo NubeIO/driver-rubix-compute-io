@@ -5,6 +5,7 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/numbers"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/types"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func (inst *Outputs) Write(ctx *gin.Context) {
@@ -31,6 +32,7 @@ func (inst *Outputs) WriteAll(ctx *gin.Context) {
 	arr := []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}
 	for _, io := range arr {
 		inst.IONum = io
+		time.Sleep(300 * time.Millisecond)
 		write, err := inst.write()
 		if err != nil {
 			reposeHandler(write, err, ctx)
