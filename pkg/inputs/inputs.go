@@ -100,11 +100,11 @@ func getTemp(data uint16) (temp float64) {
 
 func (inst *Inputs) decodeData(bytes []byte) *Data {
 	inputs := &Data{}
-
+	fmt.Println("INPUTS", "bytes", bytes)
 	for i := 0; i < 16; i = i + 2 {
 		data := binary.BigEndian.Uint16(bytes[i:i+2]) & 0xFFF
 
-		fmt.Println("INPUTS", i)
+		fmt.Println("INPUTS", i, "data", data)
 		if i == 0 {
 			voltage := getVoltage(data)
 			decodeBool := getBool(data)
