@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/config"
+	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/inputs"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/outputs"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -20,14 +21,20 @@ func main() {
 	}
 
 	router := gin.Default()
+	testMode := false
 	output := &outputs.Outputs{
-		TestMode: false,
+		TestMode: testMode,
+	}
+	input := &inputs.Inputs{
+		TestMode: testMode,
 	}
 	err := output.Init()
 	if err != nil {
 		log.Errorln("rubix.io.outputs.main() failed to init outputs")
 	}
+
 	router.POST("/api/write", output.Write)
+	router.GET("/api/inputs", input.ReadAll)
 
 	server := &http.Server{
 		Addr:    ":5001",

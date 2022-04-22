@@ -17,7 +17,6 @@ type Outputs struct {
 	IONum       string
 	Value       float64
 	WriteAsBool bool
-	UO1         gpio.PinIO
 }
 
 type OutputMap struct {

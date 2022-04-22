@@ -4,53 +4,170 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/d2r2/go-i2c"
-	"log"
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
+type Inputs struct {
+	TestMode bool
+}
+
 type inputsMap struct {
-	Raw  int     `json:"raw"`
-	TEMP float64 `json:"temp"`
+	Raw  uint16  `json:"raw"`
+	Temp float64 `json:"temp_10_k"`
 	Volt float64 `json:"volt"`
 	Amps float64 `json:"amps"`
+	Bool float64 `json:"bool"`
 }
 
 type Data struct {
-	UI1 inputsMap `json:"ui_1"`
+	UI1 inputsMap `json:"UI1"`
+	UI2 inputsMap `json:"UI2"`
+	UI3 inputsMap `json:"UI3"`
+	UI4 inputsMap `json:"UI4"`
+	UI5 inputsMap `json:"UI5"`
+	UI6 inputsMap `json:"UI6"`
+	UI7 inputsMap `json:"UI7"`
+	UI8 inputsMap `json:"UI8"`
 }
 
-func Inputs2() {
-
+func (inst *Inputs) ReadAll(ctx *gin.Context) {
 	testBytes := [16]byte{240, 0, 249, 43, 249, 157, 241, 18, 240, 0, 240, 0, 240, 0, 240, 0}
 	fmt.Println(testBytes, "testBytes")
+	if inst.TestMode {
+		data := inst.decodeData(testBytes)
+		reposeHandler(data, nil, ctx)
 
-	bus, err := i2c.NewI2C(0x33, 1)
-	if err != nil {
-		log.Fatal(err)
-	}
+	} else {
+		bus, err := i2c.NewI2C(0x33, 1)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	defer bus.Close()
-	bytes, _int, err := bus.ReadRegBytes(0xF, 16)
-	if err != nil {
-		fmt.Println(bytes)
-		return
+		defer bus.Close()
+		bytes, _, err := bus.ReadRegBytes(0xF, 16)
+		if err != nil {
+			fmt.Println(bytes)
+			return
+		}
+
 	}
-	inputs := &Data{}
+}
+
+func getVoltage(data uint16) (voltage float64) {
 	x := 10.0 / 4096.0
+	voltage = float64(data) * x
+	return
+}
+
+func getBool(data uint16) (voltage float64) {
+	x := 10.0 / 4096.0
+	voltage = float64(data) * x
+	return
+}
+
+func getAmps(data uint16) (voltage float64) {
+	x := 10.0 / 4096.0
+	voltage = float64(data) * x
+	return
+}
+
+func getTemp(data uint16) (voltage float64) {
+	x := 10.0 / 4096.0
+	voltage = float64(data) * x
+	return
+}
+
+func (inst *Inputs) decodeData(bytes [16]byte) *Data {
+	inputs := &Data{}
+
 	for i := 0; i < 16; i = i + 2 {
 		data := binary.BigEndian.Uint16(bytes[i:i+2]) & 0xFFF
-		voltage := float64(data) * x
+		voltage := getVoltage(data)
+		decodeBool := getBool(data)
+		decodeTemp := getTemp(data)
+		decodeAmps := getAmps(data)
 		if i == 0 {
-			inputs = &Data{
-				UI1: inputsMap{
-					Volt: voltage,
-				},
-			}
+			inputs.UI1.Raw = data
+			inputs.UI1.Temp = decodeTemp
+			inputs.UI1.Volt = voltage
+			inputs.UI1.Amps = decodeAmps
+			inputs.UI1.Bool = decodeBool
+
 		}
-		fmt.Println(data, "data")
-		fmt.Println(voltage, "voltage")
-		fmt.Println(" ")
+		if i == 2 {
+			inputs.UI2.Raw = data
+			inputs.UI2.Temp = decodeTemp
+			inputs.UI2.Volt = voltage
+			inputs.UI2.Amps = decodeAmps
+			inputs.UI2.Bool = decodeBool
+
+		}
+		if i == 4 {
+			inputs.UI3.Raw = data
+			inputs.UI3.Temp = decodeTemp
+			inputs.UI3.Volt = voltage
+			inputs.UI3.Amps = decodeAmps
+			inputs.UI3.Bool = decodeBool
+		}
+		if i == 6 {
+			inputs.UI4.Raw = data
+			inputs.UI4.Temp = decodeTemp
+			inputs.UI4.Volt = voltage
+			inputs.UI4.Amps = decodeAmps
+			inputs.UI4.Bool = decodeBool
+		}
+		if i == 8 {
+			inputs.UI5.Raw = data
+			inputs.UI5.Temp = decodeTemp
+			inputs.UI5.Volt = voltage
+			inputs.UI5.Amps = decodeAmps
+			inputs.UI5.Bool = decodeBool
+		}
+		if i == 10 {
+			inputs.UI6.Raw = data
+			inputs.UI6.Temp = decodeTemp
+			inputs.UI6.Volt = voltage
+			inputs.UI6.Amps = decodeAmps
+			inputs.UI6.Bool = decodeBool
+		}
+		if i == 12 {
+			inputs.UI7.Raw = data
+			inputs.UI7.Temp = decodeTemp
+			inputs.UI7.Volt = voltage
+			inputs.UI7.Amps = decodeAmps
+			inputs.UI7.Bool = decodeBool
+		}
+		if i == 14 {
+			inputs.UI8.Raw = data
+			inputs.UI8.Temp = decodeTemp
+			inputs.UI8.Volt = voltage
+			inputs.UI8.Amps = decodeAmps
+			inputs.UI8.Bool = decodeBool
+		}
+
 	}
 	fmt.Println(inputs)
-	fmt.Println("_int", _int)
-	fmt.Println("bytes", bytes)
+
+	return inputs
+}
+
+type Message struct {
+	Message string `json:"message"`
+}
+
+func reposeHandler(body interface{}, err error, ctx *gin.Context) {
+	if err != nil {
+		if err == nil {
+			ctx.JSON(404, Message{Message: "unknown error"})
+		} else {
+			if body != nil {
+				ctx.JSON(404, body)
+			} else {
+				ctx.JSON(404, Message{Message: err.Error()})
+			}
+		}
+	} else {
+		ctx.JSON(200, body)
+	}
 }
