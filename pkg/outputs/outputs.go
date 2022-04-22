@@ -104,13 +104,11 @@ func (inst *Outputs) write() (ok bool, err error) {
 			inst.logWrite()
 			const cycleLength = 100
 			const pmwClockFrequency = 50 * cycleLength // 50kHz
-			fmt.Println(111111)
-			fmt.Println(pin)
-			fmt.Println(111111)
-			pin.Output()
-			pin.Pwm()
-			pin.Freq(pmwClockFrequency)
-			pin.DutyCycle(uint32(val), cycleLength)
+			pin2 := rpio.Pin(19)
+			pin2.Output()
+			pin2.Pwm()
+			pin2.Freq(pmwClockFrequency)
+			pin2.DutyCycle(uint32(val), cycleLength)
 		}
 	}
 	return true, nil

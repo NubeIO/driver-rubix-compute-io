@@ -3,7 +3,7 @@ package outputs
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	gpio "github.com/stianeikeland/go-rpio/v4"
+	"github.com/stianeikeland/go-rpio/v4"
 )
 
 func resolveValue(ctx *gin.Context) string {
@@ -20,7 +20,7 @@ func getBodyBulk(ctx *gin.Context) (dto []BulkWrite, err error) {
 	return dto, err
 }
 
-func (inst *Outputs) pinSelect() gpio.Pin {
+func (inst *Outputs) pinSelect() rpio.Pin {
 	fmt.Println(88888)
 	io := inst.IONum
 	if io == OutputMaps.UO1.IONum {
