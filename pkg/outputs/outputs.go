@@ -100,9 +100,13 @@ func (inst *Outputs) write() (ok bool, err error) {
 				log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", false)
 			}
 		} else {
+			fmt.Println(222)
 			inst.logWrite()
 			const cycleLength = 100
-			fmt.Println("11111111111111111111111111", pin)
+			fmt.Println(222)
+			fmt.Println(222)
+			//fmt.Println("2222", pin)
+			fmt.Println(222)
 			fmt.Println(uint32(val), "VALUE------------------")
 			pin.DutyCycle(uint32(val), cycleLength)
 		}
