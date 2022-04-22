@@ -3,6 +3,7 @@ package inputs
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nube/thermistor"
 	"github.com/d2r2/go-i2c"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -74,9 +75,11 @@ func getAmps(data uint16) (voltage float64) {
 	return
 }
 
-func getTemp(data uint16) (voltage float64) {
-	x := 10.0 / 4096.0
-	voltage = float64(data) * x
+func getTemp(data uint16) (temp float64) {
+	temp, err := thermistor.ResistanceToTemperature(float64(data), thermistor.T210K)
+	if err != nil {
+		return -5555555
+	}
 	return
 }
 
