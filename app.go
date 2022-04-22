@@ -28,6 +28,7 @@ func main() {
 	input := &inputs.Inputs{
 		TestMode: testMode,
 	}
+	input.InitBus()
 	err := output.Init()
 	if err != nil {
 		log.Errorln("rubix.io.outputs.main() failed to init outputs")
