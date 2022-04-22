@@ -102,6 +102,7 @@ func (inst *Outputs) write() (ok bool, err error) {
 		} else {
 			inst.logWrite()
 			const cycleLength = 100
+			fmt.Println("11111111111111111111111111", pin)
 			fmt.Println(uint32(val), "VALUE------------------")
 			pin.DutyCycle(uint32(val), cycleLength)
 		}
