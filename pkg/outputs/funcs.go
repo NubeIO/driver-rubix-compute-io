@@ -14,6 +14,11 @@ func getBody(ctx *gin.Context) (dto *Body, err error) {
 	return dto, err
 }
 
+func getBodyBulk(ctx *gin.Context) (dto []BulkWrite, err error) {
+	err = ctx.ShouldBindJSON(&dto)
+	return dto, err
+}
+
 func (inst *Outputs) pinSelect() gpio.PinIO {
 	io := inst.IONum
 	if io == OutputMaps.UO1.IONum {

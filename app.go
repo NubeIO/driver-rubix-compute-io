@@ -22,12 +22,12 @@ func main() {
 	}
 
 	router := gin.Default()
-	testMode := false //when dev on your PC set this to true
+
 	output := &outputs.Outputs{
-		TestMode: testMode,
+		TestMode: conf.Debug,
 	}
 	input := &inputs.Inputs{
-		TestMode: testMode,
+		TestMode: conf.Debug,
 	}
 	err := output.Init()
 	if err != nil {
@@ -35,6 +35,7 @@ func main() {
 	}
 
 	router.POST("/api/outputs", output.Write)
+	router.POST("/api/outputs/bulk", output.BulkWrite)
 	router.GET("/api/outputs/all/:value", output.WriteAll)
 	router.GET("/api/inputs/all", input.ReadAll)
 
@@ -45,7 +46,6 @@ func main() {
 		Addr:    addr,
 		Handler: router,
 	}
-
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 
@@ -56,7 +56,6 @@ func main() {
 			log.Fatal("rubix.io.main() Server Close", err)
 		}
 	}()
-
 	if err := server.ListenAndServe(); err != nil {
 		if err == http.ErrServerClosed {
 			log.Infoln("rubix.io.main() Server closed as request")

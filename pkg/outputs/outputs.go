@@ -3,10 +3,6 @@ package outputs
 import (
 	"errors"
 	"fmt"
-	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
-	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/numbers"
-	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/types"
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"periph.io/x/conn/v3/gpio"
 	"periph.io/x/conn/v3/gpio/gpioreg"
@@ -15,10 +11,10 @@ import (
 )
 
 type Outputs struct {
-	TestMode      bool
-	IONum         string
-	Value         float64
-	ValueOriginal float64
+	TestMode      bool    `json:"test_mode,omitempty"`
+	IONum         string  `json:"io_num,omitempty"`
+	Value         float64 `json:"value"`
+	valueOriginal float64
 }
 
 type OutputMap struct {
@@ -32,6 +28,8 @@ pin mapping
 U1, U2, U3, U4, U5, U6, D1, D2
 [21, 20, 19, 12, 13, 18, 22, 23]
 */
+
+var outputsArr = []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}
 
 var OutputMaps = struct {
 	UO1 OutputMap
@@ -68,43 +66,9 @@ type Body struct {
 	Debug *bool   `json:"debug"`
 }
 
-func (inst *Outputs) Write(ctx *gin.Context) {
-	body, err := getBody(ctx)
-	if err != nil {
-		reposeHandler(nil, err, ctx)
-		return
-	}
-	inst.IONum = body.IONum
-	inst.ValueOriginal = body.Value
-	inst.Value = numbers.Scale(body.Value, 0, 100, 0, 1)
-	if nils.BoolIsNil(body.Debug) {
-		inst.TestMode = true
-	}
-	ok, err := inst.write()
-	reposeHandler(ok, err, ctx)
-}
-
-func (inst *Outputs) WriteAll(ctx *gin.Context) {
-	val := resolveValue(ctx)
-	writeValue := types.ToFloat64(val)
-	inst.Value = numbers.Scale(writeValue, 0, 100, 0, 1)
-	inst.ValueOriginal = writeValue
-	arr := []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}
-	for _, io := range arr {
-		inst.IONum = io
-		write, err := inst.write()
-		if err != nil {
-			reposeHandler(write, err, ctx)
-			return
-		} else {
-
-		}
-	}
-	reposeHandler(true, nil, ctx)
-}
 func (inst *Outputs) logWrite() {
-	voltage := inst.ValueOriginal / 10
-	percentage := "%" + fmt.Sprintf("%f", inst.ValueOriginal)
+	voltage := inst.valueOriginal / 10
+	percentage := "%" + fmt.Sprintf("%f", inst.valueOriginal)
 	log.Infoln("rubix.io.outputs.write() io-name:", inst.IONum, "voltage:", voltage, "percentage:", percentage)
 }
 
@@ -131,8 +95,8 @@ func (inst *Outputs) write() (ok bool, err error) {
 				}
 			}
 		} else {
-			log.Infoln("rubix.io.outputs.write() write as PWM io-name:", inst.IONum, "value:", Percent(int(inst.ValueOriginal), 100))
-			if err := pin.PWM(gpio.Duty(val), 10000*physic.Hertz); err != nil {
+			inst.logWrite()
+			if err := pin.PWM(gpio.Duty(val), 8000*physic.Hertz); err != nil {
 				log.Errorln(err)
 				return false, err
 			}
