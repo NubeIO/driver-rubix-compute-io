@@ -56,7 +56,7 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 }
 
 func getResistance(data uint16) (resistance float64) {
-	vin := getVoltage(data)
+	vin := 2.048
 	out := float64(data) * (vin / 4096.0)
 	if !(vin-out == 0) {
 		r1 := 10000.0
