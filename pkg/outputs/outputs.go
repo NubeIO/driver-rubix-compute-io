@@ -101,14 +101,12 @@ func (inst *Outputs) write() (ok bool, err error) {
 				log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", false)
 			}
 		} else {
-			fmt.Println(222)
 			inst.logWrite()
 			const cycleLength = 100
-			fmt.Println(222)
-			fmt.Println(222)
-			//fmt.Println("2222", pin)
-			fmt.Println(222)
 			const pmwClockFrequency = 50 * cycleLength // 50kHz
+			fmt.Println(111111)
+			fmt.Println(pin)
+			fmt.Println(111111)
 			pin.Output()
 			pin.Pwm()
 			pin.Freq(pmwClockFrequency)
