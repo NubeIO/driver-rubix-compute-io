@@ -98,6 +98,7 @@ func (inst *Outputs) write() (ok bool, err error) {
 			pin.Output()
 			pin.Pwm()
 			pin.Freq(pmwClockFrequency)
+			fmt.Println(uint32(val), "VALUE------------------")
 			pin.DutyCycle(uint32(val), cycleLength)
 			time.Sleep(3 * time.Second)
 
