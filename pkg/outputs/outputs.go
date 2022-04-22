@@ -3,7 +3,7 @@ package outputs
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	gpio "github.com/stianeikeland/go-rpio/v4"
+	"github.com/stianeikeland/go-rpio/v4"
 )
 
 type Outputs struct {
@@ -43,11 +43,24 @@ var OutputMaps = struct {
 
 /*
 pin mapping
-U1,  U2, U3,         U4, U5,         U6,         D1, D2
-[21, 20, 19(HW-PWM), 12, 13(HW-PWM), 18(HW-PWM), 22, 23]
+U01-21
+U02-20
+U03-19(HW-PWM)
+U04-12
+U05-13(HW-PWM)
+U06-18(HW-PWM)
+DO1-22
+DO2-23
 */
-var UO3 = gpio.Pin(19)
-var UO5 = gpio.Pin(13)
+
+var UO1 = rpio.Pin(21)
+var UO2 = rpio.Pin(20)
+var UO3 = rpio.Pin(19) //PWM
+var UO4 = rpio.Pin(12)
+var UO5 = rpio.Pin(13) //PWM
+var UO6 = rpio.Pin(18) //PWM
+var DO1 = rpio.Pin(22)
+var DO2 = rpio.Pin(23)
 
 //var UO1 = gpioreg.ByName(OutputMaps.UO1.Pin)
 //var UO2 = gpioreg.ByName(OutputMaps.UO2.Pin)
@@ -77,49 +90,24 @@ func (inst *Outputs) write() (ok bool, err error) {
 		inst.logWrite()
 	} else {
 		pin := inst.pinSelect()
-		if io == OutputMaps.DO1.IONum || io == OutputMaps.DO2.IONum {
+		if io == "UO1" || io == "UO2" || io == "UO4" || io == "DO1" || io == "DO2" {
 			if val >= 1 {
-				//log.Infoln("rubix.io.outputs.write() write as BOOL write High io-name:", inst.IONum, "value:", true)
-				//if err := pin.Out(gpio.High); err != nil {
-				//	log.Fatal(err)
-				//}
+				pin.Output()
+				pin.High()
+				log.Infoln("rubix.io.outputs.write() write as BOOL write High io-name:", inst.IONum, "value:", true)
 			} else {
-				//log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", false)
-				//if err := pin.Out(gpio.Low); err != nil {
-				//	log.Fatal(err)
-				//}
+				pin.Low()
+				log.Infoln("rubix.io.outputs.write() write as BOOL write LOW io-name:", inst.IONum, "value:", false)
 			}
 		} else {
 			inst.logWrite()
 			const cycleLength = 100
-			const pmwClockFrequency = 50 * cycleLength // 50kHz
-			log.Println("10%")
-			pin.Output()
-			pin.Pwm()
-			pin.Freq(pmwClockFrequency)
 			fmt.Println(uint32(val), "VALUE------------------")
 			pin.DutyCycle(uint32(val), cycleLength)
-			//time.Sleep(3 * time.Second)
-
-			//if err := pin.PWM(gpio.Duty(val), 8000*physic.Hertz); err != nil {
-			//	log.Errorln(err)
-			//	return false, err
-			//}
 		}
 	}
 	return true, nil
 }
-
-// HaltPin disable the gpio
-//func (inst *Outputs) haltPin(pin gpio.PinIO) {
-//	if inst.TestMode {
-//	} else {
-//		log.Infoln("rubix.io.outputs.haltPin() io-name:", pin.Name())
-//		if err := pin.Halt(); err != nil {
-//			log.Errorln(err)
-//		}
-//	}
-//}
 
 func (inst *Outputs) HaltPins() error {
 	log.Infoln("rubix.io.outputs.HaltPins()")
@@ -127,46 +115,12 @@ func (inst *Outputs) HaltPins() error {
 		return nil
 
 	} else {
-		//err := UO1.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt UO1")
-		//	return err
-		//}
-		//err = UO2.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt UO2")
-		//	return err
-		//}
-		//err = UO3.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt UO3")
-		//	return err
-		//}
-		//err = UO4.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt UO4")
-		//	return err
-		//}
-		//err = UO5.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt UO5")
-		//	return err
-		//}
-		//err = UO6.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt UO6")
-		//	return err
-		//}
-		//err = DO1.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt DO1")
-		//	return err
-		//}
-		//err = DO2.Halt()
-		//if err != nil {
-		//	log.Errorln("rubix.io.outputs.HaltPins() halt DO2")
-		//	return err
-		//}
+		err := rpio.Close()
+		if err != nil {
+			log.Errorln("rubix.io.outputs.HaltPins() rpio.Close err:", err)
+			return err
+		}
+
 	}
 	return nil
 }
@@ -175,27 +129,38 @@ func (inst *Outputs) Init() error {
 	if inst.TestMode {
 
 	} else {
-		if err := gpio.Open(); err != nil {
+		if err := rpio.Open(); err != nil {
 			log.Fatalf("Error opening GPIO: %s", err.Error())
 		}
-		//if _, err := host.Init(); err != nil {
-		//	log.Errorln(err)
-		//	return err
-		//}
-		UO3 = gpio.Pin(19)
-		UO5 = gpio.Pin(13)
-		//UO1 = gpioreg.ByName(OutputMaps.UO1.Pin)
-		//UO2 = gpioreg.ByName(OutputMaps.UO2.Pin)
-		//UO3 = gpioreg.ByName(OutputMaps.UO3.Pin)
-		//UO4 = gpioreg.ByName(OutputMaps.UO4.Pin)
-		//UO5 = gpioreg.ByName(OutputMaps.UO5.Pin)
-		//UO6 = gpioreg.ByName(OutputMaps.UO6.Pin)
-		//DO1 = gpioreg.ByName(OutputMaps.DO1.Pin)
-		//DO2 = gpioreg.ByName(OutputMaps.DO2.Pin)
-		//if UO1 == nil {
-		//	log.Errorln("rubix.io.outputs.Init() failed to init UO1")
-		//	return errors.New("failed to init pin")
-		//}
+		err := rpio.Close()
+		if err != nil {
+			log.Errorln("rubix.io.outputs.Init() rpio.Close err:", err)
+			return err
+		}
+		//DOs
+		DO1 = rpio.Pin(22)
+		DO1.Output()
+		DO2 = rpio.Pin(23)
+		DO2.Output()
+
+		//PWMs
+		const cycleLength = 100
+		const pmwClockFrequency = 50 * cycleLength // 50kHz
+		UO3 = rpio.Pin(19)
+		UO3.Output()
+		UO3.Pwm()
+		UO3.Freq(pmwClockFrequency)
+
+		UO5 = rpio.Pin(13)
+		UO5.Output()
+		UO5.Pwm()
+		UO5.Freq(pmwClockFrequency)
+
+		UO6 = rpio.Pin(18)
+		UO6.Output()
+		UO6.Pwm()
+		UO6.Freq(pmwClockFrequency)
+
 	}
 	return nil
 }
