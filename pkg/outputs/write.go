@@ -20,6 +20,7 @@ func (inst *Outputs) Write(ctx *gin.Context) {
 	if nils.BoolIsNil(body.Debug) {
 		inst.TestMode = true
 	}
+	time.Sleep(50 * time.Millisecond)
 	ok, err := inst.write()
 	reposeHandler(ok, err, ctx)
 }
