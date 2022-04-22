@@ -26,7 +26,7 @@ type OutputMap struct {
 /*
 pin mapping
 U1, U2, U3, U4, U5, U6, D1, D2
-[21, 20, 19, 12, 13, 18, 22, 23]
+[21, 20, 19(HW-PWM), 12, 13(HW-PWM), 18(HW-PWM), 22, 23]
 */
 
 var outputsArr = []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}

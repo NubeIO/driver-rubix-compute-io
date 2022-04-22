@@ -4,9 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nube/thermistor"
-	"github.com/d2r2/go-i2c"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
+	"github.com/reef-pi/rpi/i2c"
 )
 
 type Inputs struct {
@@ -38,21 +37,32 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 		data := inst.decodeData(testBytes)
 		reposeHandler(data, nil, ctx)
 	} else {
-		bus, err := i2c.NewI2C(0x33, 1)
+		//bus, err := i2c.NewI2C(0x33, 1)
+		//if err != nil {
+		//	log.Errorln(err, "NewI2C")
+		//	reposeHandler(nil, err, ctx)
+		//	return
+		//}
+		//defer bus.Close()
+		//bytes, _, err := bus.ReadRegBytes(0xDA, 16)
+		//if err != nil {
+		//	log.Errorln(err, "ReadRegBytes")
+		//	reposeHandler(nil, err, ctx)
+		//	return
+		//}
+		//log.Infoln("rubix.io.inputs.ReadAll() I2C return bytes:", bytes)
+		bus, err := i2c.New()
+		fmt.Println(bus, err)
 		if err != nil {
-			log.Errorln(err, "NewI2C")
-			reposeHandler(nil, err, ctx)
 			return
 		}
-		defer bus.Close()
-		bytes, _, err := bus.ReadRegBytes(0xDA, 16)
+		b := make([]byte, 16)
+		err = bus.ReadFromReg(0x33, 0xDA, b)
 		if err != nil {
-			log.Errorln(err, "ReadRegBytes")
-			reposeHandler(nil, err, ctx)
 			return
 		}
-		log.Infoln("rubix.io.inputs.ReadAll() I2C return bytes:", bytes)
-		data := inst.decodeData(bytes)
+
+		data := inst.decodeData(b)
 		reposeHandler(data, nil, ctx)
 	}
 }
