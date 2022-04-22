@@ -138,10 +138,10 @@ func (inst *Outputs) Init() error {
 			return err
 		}
 		//DOs
-		DO1 = rpio.Pin(22)
-		DO1.Output()
-		DO2 = rpio.Pin(23)
-		DO2.Output()
+		//DO1 = rpio.Pin(22)
+		//DO1.Output()
+		//DO2 = rpio.Pin(23)
+		//DO2.Output()
 
 		//PWMs
 		const cycleLength = 100
