@@ -30,7 +30,7 @@ func (inst *Outputs) WriteAll(ctx *gin.Context) {
 	writeValue := types.ToFloat64(val)
 	inst.Value = numbers.Scale(writeValue, 0, 100, 0, 1)
 	inst.valueOriginal = writeValue
-	arr := []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}
+	arr := []string{"UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"} //TODO add back in UO1
 	for _, io := range arr {
 		inst.IONum = io
 		time.Sleep(300 * time.Millisecond)
