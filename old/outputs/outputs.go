@@ -25,8 +25,14 @@ type OutputMap struct {
 
 /*
 pin mapping
-U1, U2, U3, U4, U5, U6, D1, D2
-[21, 20, 19(HW-PWM), 12, 13(HW-PWM), 18(HW-PWM), 22, 23]
+U01-21
+U02-20
+U03-19(HW-PWM)
+U04-12
+U05-13(HW-PWM)
+U06-18(HW-PWM)
+DO1-22
+DO2-23
 */
 
 var outputsArr = []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}
@@ -96,6 +102,13 @@ func (inst *Outputs) write() (ok bool, err error) {
 			}
 		} else {
 			inst.logWrite()
+			defer func(pin gpio.PinIO) {
+				err := pin.Halt()
+				fmt.Println("------PIN HALT")
+				if err != nil {
+					fmt.Println("------PIN HALT ERROR", err)
+				}
+			}(pin)
 			if err := pin.PWM(gpio.Duty(val), 8000*physic.Hertz); err != nil {
 				log.Errorln(err)
 				return false, err
