@@ -101,11 +101,14 @@ func (inst *Outputs) write() (ok bool, err error) {
 				}
 			}
 		} else {
+			fmt.Println(11111)
 			inst.logWrite()
 			if err := pin.PWM(gpio.Duty(val), 8000*physic.Hertz); err != nil {
+				fmt.Println(2222)
 				log.Errorln(err)
 				return false, err
 			}
+			fmt.Println(333333)
 			fmt.Println("------PIN HALT-1111")
 			err := pin.Halt()
 			fmt.Println("------PIN HALT-2222")
