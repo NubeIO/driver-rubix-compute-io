@@ -129,12 +129,12 @@ func (inst *Outputs) HaltPins() error {
 		return nil
 
 	} else {
-		defer func() {
-			err := rpio.Close()
-			if err != nil {
-				log.Errorln("rubix.io.outputs.HaltPins() rpio.Close err:", err)
-			}
-		}()
+		//defer func() {
+		//	err := rpio.Close()
+		//	if err != nil {
+		//		log.Errorln("rubix.io.outputs.HaltPins() rpio.Close err:", err)
+		//	}
+		//}()
 
 	}
 	return nil
@@ -144,16 +144,16 @@ func (inst *Outputs) Init() error {
 	if inst.TestMode {
 
 	} else {
-		log.Println("rubix.io.outputs.Init() INIT")
-		if err := rpio.Open(); err != nil {
-			log.Fatalf("Error opening GPIO: %s", err.Error())
-		}
-		defer func() {
-			err := rpio.Close()
-			if err != nil {
-				log.Errorln("rubix.io.outputs.Init() rpio.Close err:", err)
-			}
-		}()
+		//log.Println("rubix.io.outputs.Init() INIT")
+		//if err := rpio.Open(); err != nil {
+		//	log.Fatalf("Error opening GPIO: %s", err.Error())
+		//}
+		//defer func() {
+		//	err := rpio.Close()
+		//	if err != nil {
+		//		log.Errorln("rubix.io.outputs.Init() rpio.Close err:", err)
+		//	}
+		//}()
 
 		//rpio
 
