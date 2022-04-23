@@ -100,6 +100,13 @@ func (inst *Outputs) write() (ok bool, err error) {
 				log.Errorln(err)
 				return false, err
 			}
+			err := pin.Halt()
+			log.Infoln("------PIN HALT-2222")
+			if err != nil {
+				log.Infoln("------PIN HALT ERROR", err)
+			} else {
+				log.Infoln("------PIN HALT")
+			}
 		}
 	}
 	return true, nil
