@@ -25,8 +25,14 @@ type OutputMap struct {
 
 /*
 pin mapping
-U1, U2, U3, U4, U5, U6, D1, D2
-[21, 20, 19(HW-PWM), 12, 13(HW-PWM), 18(HW-PWM), 22, 23]
+U01-21
+U02-20
+U03-19(HW-PWM)
+U04-12          //PWM0
+U05-13(HW-PWM)  //PWM1
+U06-18(HW-PWM)
+DO1-22
+DO2-23
 */
 
 var outputsArr = []string{"UO1", "UO2", "UO3", "UO4", "UO5", "UO6", "DO1", "DO1"}
@@ -44,8 +50,8 @@ var OutputMaps = struct {
 	UO1: OutputMap{IONum: "UO1", Pin: "21", Type: "UO"},
 	UO2: OutputMap{IONum: "UO2", Pin: "20", Type: "UO"},
 	UO3: OutputMap{IONum: "UO3", Pin: "19", Type: "UO"},
-	UO4: OutputMap{IONum: "UO4", Pin: "12", Type: "UO"},
-	UO5: OutputMap{IONum: "UO5", Pin: "13", Type: "UO"},
+	UO4: OutputMap{IONum: "UO4", Pin: "PWM0", Type: "UO"},
+	UO5: OutputMap{IONum: "UO5", Pin: "PWM1", Type: "UO"},
 	UO6: OutputMap{IONum: "UO6", Pin: "18", Type: "UO"},
 	DO1: OutputMap{IONum: "DO1", Pin: "22", Type: "DO"},
 	DO2: OutputMap{IONum: "DO2", Pin: "23", Type: "DO"},
