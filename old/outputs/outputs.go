@@ -101,14 +101,20 @@ func (inst *Outputs) write() (ok bool, err error) {
 				}
 			}
 		} else {
-			inst.logWrite()
-			defer func(pin gpio.PinIO) {
-				err := pin.Halt()
+			err := pin.Halt()
+			if err != nil {
+				fmt.Println("------PIN HALT ERROR", err)
+			} else {
 				fmt.Println("------PIN HALT")
-				if err != nil {
-					fmt.Println("------PIN HALT ERROR", err)
-				}
-			}(pin)
+			}
+			inst.logWrite()
+			//defer func(pin gpio.PinIO) {
+			//	err := pin.Halt()
+			//	fmt.Println("------PIN HALT")
+			//	if err != nil {
+			//		fmt.Println("------PIN HALT ERROR", err)
+			//	}
+			//}(pin)
 			if err := pin.PWM(gpio.Duty(val), 8000*physic.Hertz); err != nil {
 				log.Errorln(err)
 				return false, err
