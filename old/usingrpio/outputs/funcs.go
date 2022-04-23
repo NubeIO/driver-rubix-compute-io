@@ -1,8 +1,9 @@
 package outputs
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"periph.io/x/conn/v3/gpio"
+	"github.com/stianeikeland/go-rpio/v4"
 )
 
 func resolveValue(ctx *gin.Context) string {
@@ -19,26 +20,37 @@ func getBodyBulk(ctx *gin.Context) (dto []BulkWrite, err error) {
 	return dto, err
 }
 
-func (inst *Outputs) pinSelect() gpio.PinIO {
+func (inst *Outputs) pinSelect() rpio.Pin {
+	fmt.Println(88888)
 	io := inst.IONum
 	if io == OutputMaps.UO1.IONum {
-		return UO1
-	} else if io == OutputMaps.UO2.IONum {
-		return UO2
-	} else if io == OutputMaps.UO3.IONum {
 		return UO3
-	} else if io == OutputMaps.UO4.IONum {
-		return UO4
+	} else if io == OutputMaps.UO3.IONum {
+		fmt.Println(88888)
+		fmt.Println(UO3)
+		return UO3
 	} else if io == OutputMaps.UO5.IONum {
 		return UO5
-	} else if io == OutputMaps.UO6.IONum {
-		return UO6
-	} else if io == OutputMaps.DO1.IONum {
-		return DO1
-	} else if io == OutputMaps.DO2.IONum {
-		return DO2
 	}
-	return nil
+
+	//if io == OutputMaps.UO1.IONum {
+	//	return UO1
+	//} else if io == OutputMaps.UO2.IONum {
+	//	return UO2
+	//} else if io == OutputMaps.UO3.IONum {
+	//	return UO3
+	//} else if io == OutputMaps.UO4.IONum {
+	//	return UO4
+	//} else if io == OutputMaps.UO5.IONum {
+	//	return UO5
+	//} else if io == OutputMaps.UO6.IONum {
+	//	return UO6
+	//} else if io == OutputMaps.DO1.IONum {
+	//	return DO1
+	//} else if io == OutputMaps.DO2.IONum {
+	//	return DO2
+	//}
+	return UO3
 }
 
 func reposeHandler(body interface{}, err error, ctx *gin.Context) {

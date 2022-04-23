@@ -16,7 +16,7 @@ func (inst *Outputs) Write(ctx *gin.Context) {
 	}
 	inst.IONum = body.IONum
 	inst.valueOriginal = body.Value
-	inst.Value = numbers.Scale(body.Value, 0, 100, 0, 1)
+	inst.Value = numbers.Scale(body.Value, 0, 100, 0, 100)
 	if nils.BoolIsNil(body.Debug) {
 		inst.TestMode = true
 	}
