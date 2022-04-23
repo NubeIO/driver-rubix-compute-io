@@ -104,6 +104,15 @@ func (inst *Outputs) write() (ok bool, err error) {
 			inst.logWrite()
 			const cycleLength = 100
 			const pmwClockFrequency = 50 * cycleLength // 50kHz
+			if err := rpio.Open(); err != nil {
+				log.Fatalf("Error opening GPIO: %s", err.Error())
+			}
+			defer func() {
+				err := rpio.Close()
+				if err != nil {
+					log.Errorln("rubix.io.outputs.Init() rpio.Close err:", err)
+				}
+			}()
 			pin2 := rpio.Pin(19)
 			pin2.Output()
 			pin2.Pwm()
@@ -145,6 +154,8 @@ func (inst *Outputs) Init() error {
 				log.Errorln("rubix.io.outputs.Init() rpio.Close err:", err)
 			}
 		}()
+
+		//rpio
 
 	}
 	return nil
