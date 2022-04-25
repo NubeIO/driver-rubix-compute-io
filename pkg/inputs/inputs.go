@@ -1,11 +1,12 @@
 package inputs
 
 import (
+	"context"
 	"encoding/binary"
-	"fmt"
+	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/pigpiod"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nube/thermistor"
 	"github.com/gin-gonic/gin"
-	"github.com/reef-pi/rpi/i2c"
+	"time"
 )
 
 type Inputs struct {
@@ -32,38 +33,39 @@ type Data struct {
 }
 
 func (inst *Inputs) ReadAll(ctx *gin.Context) {
-	testBytes := []byte{240, 0, 249, 43, 249, 157, 241, 18, 240, 0, 240, 0, 240, 0, 240, 0}
+	testBytes := []byte{248, 182, 248, 176, 248, 168, 248, 184, 248, 174, 248, 178, 248, 177, 248, 177}
 	if inst.TestMode {
-		data := inst.decodeData(testBytes)
+		data := inst.DecodeData(testBytes)
 		reposeHandler(data, nil, ctx)
 	} else {
-		//bus, err := i2c.NewI2C(0x33, 1)
-		//if err != nil {
-		//	log.Errorln(err, "NewI2C")
-		//	reposeHandler(nil, err, ctx)
-		//	return
-		//}
-		//defer bus.Close()
-		//bytes, _, err := bus.ReadRegBytes(0xDA, 16)
-		//if err != nil {
-		//	log.Errorln(err, "ReadRegBytes")
-		//	reposeHandler(nil, err, ctx)
-		//	return
-		//}
-		//log.Infoln("rubix.io.inputs.ReadAll() I2C return bytes:", bytes)
-		bus, err := i2c.New()
-		fmt.Println(bus, err)
-		if err != nil {
-			return
-		}
-		b := make([]byte, 16)
-		err = bus.ReadFromReg(0x33, 0xDA, b)
-		if err != nil {
-			return
-		}
 
-		data := inst.decodeData(b)
+		ip := "192.168.15.10:8888"
+		ct, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		c, err := pigpiod.Connect(ct, ip)
+		if err != nil {
+			panic(err)
+		}
+		defer c.Close()
+
+		d, err := c.ReadI2c(1, 16)
+		data := inst.DecodeData(d)
 		reposeHandler(data, nil, ctx)
+
+		//example of actual hardware read
+		//github.com/reef-pi/rpi/i2c
+		//bus, err := i2c.New()
+		//fmt.Println(bus, err)
+		//if err != nil {
+		//	return
+		//}
+		//b := make([]byte, 16)
+		//err = bus.ReadFromReg(0x33, 0xDA, b)
+		//if err != nil {
+		//	return
+		//}
+
 	}
 }
 
@@ -108,13 +110,10 @@ func getTemp(data uint16) (temp float64) {
 	return
 }
 
-func (inst *Inputs) decodeData(bytes []byte) *Data {
+func (inst *Inputs) DecodeData(bytes []byte) *Data {
 	inputs := &Data{}
-	fmt.Println("INPUTS", "bytes", bytes)
 	for i := 0; i < 16; i = i + 2 {
 		data := binary.BigEndian.Uint16(bytes[i:i+2]) & 0xFFF
-
-		fmt.Println("INPUTS", i, "data", data)
 		if i == 0 {
 			voltage := getVoltage(data)
 			decodeBool := getBool(data)

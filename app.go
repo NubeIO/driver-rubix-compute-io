@@ -63,9 +63,5 @@ func main() {
 			log.Fatal("rubix.io.main() Server unexpect Close", err)
 		}
 	}
-	err = output.HaltPins()
-	if err != nil {
-		log.Errorln("rubix.io.outputs.main() failed to halt all outputs", err)
-	}
 	log.Infoln("rubix.io.main() Server exiting")
 }

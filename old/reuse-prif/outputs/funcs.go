@@ -2,6 +2,7 @@ package outputs
 
 import (
 	"github.com/gin-gonic/gin"
+	"periph.io/x/conn/v3/gpio"
 )
 
 func resolveValue(ctx *gin.Context) string {
@@ -16,6 +17,28 @@ func getBody(ctx *gin.Context) (dto *Body, err error) {
 func getBodyBulk(ctx *gin.Context) (dto []BulkWrite, err error) {
 	err = ctx.ShouldBindJSON(&dto)
 	return dto, err
+}
+
+func (inst *Outputs) pinSelect() gpio.PinIO {
+	io := inst.IONum
+	if io == OutputMaps.UO1.IONum {
+		return UO1
+	} else if io == OutputMaps.UO2.IONum {
+		return UO2
+	} else if io == OutputMaps.UO3.IONum {
+		return UO3
+	} else if io == OutputMaps.UO4.IONum {
+		return UO4
+	} else if io == OutputMaps.UO5.IONum {
+		return UO5
+	} else if io == OutputMaps.UO6.IONum {
+		return UO6
+	} else if io == OutputMaps.DO1.IONum {
+		return DO1
+	} else if io == OutputMaps.DO2.IONum {
+		return DO2
+	}
+	return nil
 }
 
 func reposeHandler(body interface{}, err error, ctx *gin.Context) {
