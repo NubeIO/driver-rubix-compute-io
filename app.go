@@ -23,7 +23,7 @@ func main() {
 
 	router := gin.Default()
 
-	ip := "0.0.0.0" //used for pig-io
+	ip := conf.Server.Address
 
 	output := &outputs.Outputs{
 		TestMode:   conf.Debug,
@@ -31,13 +31,15 @@ func main() {
 		DevicePort: 8888,
 	}
 	input := &inputs.Inputs{
-		TestMode:   false,
-		DeviceIP:   ip,
-		DevicePort: 8888,
+		TestMode: false,
 	}
 	err := output.Init()
 	if err != nil {
 		log.Errorln("rubix.io.outputs.main() failed to init outputs")
+	}
+	err = input.Init()
+	if err != nil {
+		log.Errorln("rubix.io.outputs.main() failed to init inputs")
 	}
 
 	router.POST("/api/outputs", output.Write)

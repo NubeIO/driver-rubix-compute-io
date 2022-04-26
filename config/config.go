@@ -37,6 +37,7 @@ func CreateApp() *Configuration {
 }
 
 func (conf *Configuration) Parse() *Configuration {
+	address := flag.String("ip", "0.0.0.0", "device ip")
 	port := flag.Int("p", 5001, "Port")
 	globalDir := flag.String("g", "./", "Global Directory")
 	dataDir := flag.String("d", "data", "Data Directory")
@@ -44,6 +45,7 @@ func (conf *Configuration) Parse() *Configuration {
 	prod := flag.Bool("prod", false, "Deployment Mode")
 	debug := flag.Bool("debug", false, "test mode")
 	flag.Parse()
+	conf.Server.Address = *address
 	conf.Server.Port = *port
 	conf.Location.GlobalDir = *globalDir
 	conf.Location.DataDir = *dataDir
