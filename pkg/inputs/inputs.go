@@ -3,6 +3,7 @@ package inputs
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/pigpiod"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nube/thermistor"
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,9 @@ import (
 )
 
 type Inputs struct {
-	TestMode bool
+	TestMode   bool
+	DeviceIP   string
+	DevicePort int
 }
 
 type inputsMap struct {
@@ -32,6 +35,19 @@ type Data struct {
 	UI8 inputsMap `json:"UI8"`
 }
 
+func (inst *Inputs) getIP() (out string) {
+	ip := "0.0.0.0"
+	port := 8888
+	if inst.DeviceIP != "" {
+		ip = inst.DeviceIP
+	}
+	if inst.DevicePort != 0 {
+		port = inst.DevicePort
+	}
+	out = fmt.Sprintf("%s:%d", ip, port)
+	return
+}
+
 func (inst *Inputs) ReadAll(ctx *gin.Context) {
 	testBytes := []byte{248, 182, 248, 176, 248, 168, 248, 184, 248, 174, 248, 178, 248, 177, 248, 177}
 	if inst.TestMode {
@@ -39,7 +55,7 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 		reposeHandler(data, nil, ctx)
 	} else {
 
-		ip := "192.168.15.10:8888"
+		ip := inst.getIP()
 		ct, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 

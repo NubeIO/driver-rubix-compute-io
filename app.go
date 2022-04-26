@@ -24,10 +24,14 @@ func main() {
 	router := gin.Default()
 
 	output := &outputs.Outputs{
-		TestMode: conf.Debug,
+		TestMode:   conf.Debug,
+		DeviceIP:   "0.0.0.0",
+		DevicePort: 8888,
 	}
 	input := &inputs.Inputs{
-		TestMode: conf.Debug,
+		TestMode:   conf.Debug,
+		DeviceIP:   "0.0.0.0",
+		DevicePort: 8888,
 	}
 	err := output.Init()
 	if err != nil {

@@ -1,10 +1,23 @@
 package pigpiod
 
-func (c *Conn) Write(gpio int, level Level) error {
+func (c *Conn) WriteOn(gpio int) error {
 	cmd := Cmd{
 		cmd: 4,
 		p1:  uint32(gpio),
-		p2:  uint32(level),
+		p2:  uint32(LevelHigh),
+	}
+	_, err := cmd.ExecuteRes(c.tcp)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Conn) WriteOff(gpio int) error {
+	cmd := Cmd{
+		cmd: 4,
+		p1:  uint32(gpio),
+		p2:  uint32(LevelLow),
 	}
 	_, err := cmd.ExecuteRes(c.tcp)
 	if err != nil {
