@@ -115,6 +115,11 @@ func (inst *Outputs) logWrite(asDo, doValue bool) {
 	voltage := inst.valueOriginal / 10
 	percentage := "%" + fmt.Sprintf("%f", inst.valueOriginal)
 	if asDo {
+		if doValue {
+			voltage = 12
+		} else {
+			voltage = 0
+		}
 		log.Infoln("rubix.io.outputs.write() WRITE-DO io-name:", inst.IONum, "voltage:", voltage, "on-off:", doValue)
 	} else {
 		log.Infoln("rubix.io.outputs.write() WRITE-AO io-name:", inst.IONum, "voltage:", voltage, "percentage:", percentage)
@@ -124,13 +129,10 @@ func (inst *Outputs) logWrite(asDo, doValue bool) {
 func (inst *Outputs) write() (ok bool, err error) {
 	var val = inst.Value * 1000000
 	io := inst.IONum
-	fmt.Println(io)
-
 	exists, err := ioExists(OutputMaps, io)
 	if !exists || err != nil {
 		return false, errors.New("IO-number is not valid")
 	}
-
 	isPWM, pin, err := SupportsPWM(OutputMaps, io)
 	if !exists || err != nil {
 		return false, errors.New("error is validating if UO is a PWM")
@@ -145,14 +147,14 @@ func (inst *Outputs) write() (ok bool, err error) {
 	}
 	defer c.Close()
 
-	if isPWM {
+	if isPWM { //WRITE AOs
 		inst.logWrite(false, false)
 		err := c.PWM(pin, int(val))
 		if err != nil {
 			return false, err
 		}
 
-	} else {
+	} else { //WRITE on/off
 		if inst.valueOriginal > 0 {
 			inst.logWrite(true, true)
 			err = c.WriteOn(pin)

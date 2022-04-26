@@ -3,14 +3,13 @@ package pigpiod
 import (
 	"context"
 	"fmt"
-	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/inputs"
 	"testing"
 	"time"
 )
 
 func TestCommands(*testing.T) {
 
-	piaddr := "192.168.15.10:8888"
+	piaddr := "192.168.15.191:8888"
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -21,11 +20,15 @@ func TestCommands(*testing.T) {
 	}
 	defer c.Close()
 
-	d, err := c.ReadI2c(1, 16)
-	ins := &inputs.Inputs{}
-	data := ins.DecodeData(d)
-	fmt.Println(data.UI1.Temp)
+	busInst, err := c.InitI2c(1, 0x33)
 
-	fmt.Println(d, err)
+	write, err := c.WriteI2c(int(busInst), 0x33, 0xF)
+	fmt.Println(write, err)
+	//d, err := c.ReadI2c(int(busInst), 0xF, 16)
+	//ins := &inputs.Inputs{}
+	//data := ins.DecodeData(d)
+	//fmt.Println(data.UI1.Temp)
+	//
+	//fmt.Println(d, err)
 
 }

@@ -1,13 +1,13 @@
 package inputs
 
 import (
-	"context"
 	"encoding/binary"
+	"errors"
 	"fmt"
-	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/pigpiod"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nube/thermistor"
+	"github.com/d2r2/go-i2c"
 	"github.com/gin-gonic/gin"
-	"time"
+	log "github.com/sirupsen/logrus"
 )
 
 type Inputs struct {
@@ -54,20 +54,82 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 		data := inst.DecodeData(testBytes)
 		reposeHandler(data, nil, ctx)
 	} else {
-
-		ip := inst.getIP()
-		ct, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-
-		c, err := pigpiod.Connect(ct, ip)
+		i2, err := i2c.NewI2C(0x33, 1)
 		if err != nil {
-			panic(err)
+			log.Errorln("pig-io.inputs.failed.ReadAll() failed to open i2c")
+			reposeHandler(nil, errors.New("failed to open i2c"), ctx)
+			return
 		}
-		defer c.Close()
+		defer i2.Close()
+		err = i2.WriteRegU8(0x33, 0xDA)
+		if err != nil {
+			log.Errorln("pig-io.inputs.failed.ReadAll() failed to write i2c")
+			reposeHandler(nil, errors.New("failed write to inputs board"), ctx)
+			return
+		}
 
-		d, err := c.ReadI2c(1, 16)
-		data := inst.DecodeData(d)
-		reposeHandler(data, nil, ctx)
+		bytes, _, err := i2.ReadRegBytes(0xF, 16)
+		fmt.Println(bytes, err)
+		if err != nil {
+			log.Errorln("pig-io.inputs.failed.ReadAll() failed to read i2c")
+			reposeHandler(nil, errors.New("failed to read i2c"), ctx)
+			return
+		}
+
+		//ip := inst.getIP()
+		//ct, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		//defer cancel()
+		//
+		//c, err := pigpiod.Connect(ct, ip)
+		//if err != nil {
+		//	panic(err)
+		//}
+		//defer c.Close()
+		//
+		//busInst, err := c.InitI2c(1, 0x33)
+		//if err != nil {
+		//	log.Errorln("pig-io.inputs.failed.ReadAll() failed to open i2c")
+		//	reposeHandler(nil, errors.New("failed to open i2c"), ctx)
+		//	return
+		//}
+		//
+		////_, err = c.WriteI2c(int(busInst), 0x33, 0xDA)
+		////if err != nil {
+		////	log.Errorln("pig-io.inputs.failed.ReadAll() WriteI2c")
+		////	reposeHandler(nil, errors.New("failed to write I2c"), ctx)
+		////	return
+		////}
+		//
+		//d, err := c.ReadI2c(int(busInst), 0xF, 16)
+		//fmt.Println(d)
+		//if err != nil {
+		//	log.Errorln("pig-io.inputs.failed.ReadAll() failed to do an i2c read")
+		//	reposeHandler(nil, errors.New("failed to read i2c"), ctx)
+		//	return
+		//}
+		//if len(d) == 16 {
+		//	err := c.CloseI2c(int(busInst))
+		//	if err != nil {
+		//		log.Errorln("pig-io.inputs.failed.ReadAll() to close ic2 bus")
+		//		reposeHandler(nil, errors.New("failed to close i2c"), ctx)
+		//		return
+		//	}
+		//	data := inst.DecodeData(d)
+		//	reposeHandler(data, nil, ctx)
+		//	return
+		//} else {
+		//	err := c.CloseI2c(int(busInst))
+		//	if err != nil {
+		//		log.Errorln("pig-io.inputs.failed.ReadAll() to close ic2 bus")
+		//		reposeHandler(nil, errors.New("failed to close i2c"), ctx)
+		//		return
+		//	}
+		//	if err != nil {
+		//		log.Errorln("pig-io.inputs.failed.ReadAll() i2c bytes is incorrect len leg is:", len(d))
+		//		reposeHandler(nil, errors.New("incorrect data return"), ctx)
+		//		return
+		//	}
+		//}
 
 		//example of actual hardware read
 		//github.com/reef-pi/rpi/i2c
