@@ -72,6 +72,13 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 		//	reposeHandler(nil, errors.New("failed write to inputs board"), ctx)
 		//	return
 		//}
+		var err error
+		i2, err = i2c.NewI2C(0x33, 1)
+		if err != nil {
+			log.Errorln("pig-io.inputs.failed.ReadAll() failed to open i2c")
+			reposeHandler(nil, errors.New("failed to open i2c"), ctx)
+			return
+		}
 
 		bytes, _, err := i2.ReadRegBytes(0xF, 16)
 		if err != nil {
