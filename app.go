@@ -22,16 +22,13 @@ func main() {
 	}
 
 	router := gin.Default()
-
 	ip := conf.Server.Address
-
 	output := &outputs.Outputs{
-		TestMode:   conf.Debug,
 		DeviceIP:   ip,
 		DevicePort: 8888,
 	}
 	input := &inputs.Inputs{
-		TestMode: false,
+		TestMode: conf.Debug,
 	}
 	err := output.Init()
 	if err != nil {

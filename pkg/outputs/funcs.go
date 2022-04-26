@@ -24,7 +24,7 @@ func reposeHandler(body interface{}, err error, ctx *gin.Context) {
 			ctx.JSON(404, Message{Message: "unknown error"})
 		} else {
 			if body != nil {
-				ctx.JSON(404, body)
+				ctx.JSON(404, Message{Message: err.Error()})
 			} else {
 				ctx.JSON(404, Message{Message: err.Error()})
 			}

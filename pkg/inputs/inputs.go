@@ -36,18 +36,22 @@ var i2 *i2c.I2C
 
 func (inst *Inputs) Init() error {
 	var err error
-	i2, err = i2c.NewI2C(0x33, 1)
-	if err != nil {
-		log.Errorln("pig-io.inputs.failed.ReadAll() failed to open i2c")
-		return errors.New("failed to open i2c")
+	if !inst.TestMode {
+		i2, err = i2c.NewI2C(0x33, 1)
+		if err != nil {
+			log.Errorln("pig-io.inputs.failed.ReadAll() failed to open i2c")
+			return errors.New("failed to open i2c")
+		}
+		defer i2.Close()
+		//TODO add this into init
+		err = i2.WriteRegU8(0x33, 0xDA)
+		if err != nil {
+			log.Errorln("pig-io.inputs.failed.ReadAll() failed to write i2c")
+			return errors.New("failed write to inputs board")
+		}
+		return nil
 	}
-	defer i2.Close()
-	//TODO add this into init
-	err = i2.WriteRegU8(0x33, 0xDA)
-	if err != nil {
-		log.Errorln("pig-io.inputs.failed.ReadAll() failed to write i2c")
-		return errors.New("failed write to inputs board")
-	}
+
 	return nil
 }
 

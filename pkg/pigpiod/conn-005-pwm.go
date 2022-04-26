@@ -4,12 +4,16 @@ import (
 	"fmt"
 )
 
-func (c *Conn) HardwarePWM(gpio int, dutyCycle uint32) error {
+//pigs hp 18 80000 300000 (will write 3vdc)
+//HP g f dc        Set hardware PWM frequency and duty-cycle
+
+func (c *Conn) HardwarePWM(gpio int, dutyCycle int) error {
 	cmd := Cmd{
-		cmd: 5,
-		p1:  uint32(gpio),
-		p2:  4,
-		p3:  dutyCycle,
+		cmd:       86,
+		p1:        uint32(gpio),
+		p2:        80000,
+		p3:        4,
+		extension: uint32(dutyCycle),
 	}
 	_, err := cmd.ExecuteRes(c.tcp)
 	if err != nil {

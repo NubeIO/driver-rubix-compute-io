@@ -137,19 +137,18 @@ func (inst *Outputs) write() (ok bool, err error) {
 	if !exists || err != nil {
 		return false, errors.New("error is validating if UO is a PWM")
 	}
-	fmt.Println(val, pin)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	c, err := pigpiod.Connect(ctx, inst.getIP())
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 	defer c.Close()
 
 	if isPWM { //WRITE AOs
 		inst.logWrite(false, false)
-		err := c.PWM(pin, int(val))
+		err := c.HardwarePWM(pin, int(val))
 		if err != nil {
 			return false, err
 		}
@@ -170,7 +169,10 @@ func (inst *Outputs) write() (ok bool, err error) {
 		}
 
 	}
-
+	err = c.Close()
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

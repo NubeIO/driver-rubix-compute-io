@@ -8,9 +8,10 @@ import (
 
 type Configuration struct {
 	Server struct {
-		Address string `default:"0.0.0.0"`
-		Port    int    `default:"5001"`
+		Address string
+		Port    int `default:"5001"`
 	}
+
 	Location struct {
 		GlobalDir string `default:"./"`
 		ConfigDir string `default:"config"`
@@ -37,7 +38,6 @@ func CreateApp() *Configuration {
 }
 
 func (conf *Configuration) Parse() *Configuration {
-	address := flag.String("ip", "0.0.0.0", "device ip")
 	port := flag.Int("p", 5001, "Port")
 	globalDir := flag.String("g", "./", "Global Directory")
 	dataDir := flag.String("d", "data", "Data Directory")
@@ -45,14 +45,13 @@ func (conf *Configuration) Parse() *Configuration {
 	prod := flag.Bool("prod", false, "Deployment Mode")
 	debug := flag.Bool("debug", false, "test mode")
 	flag.Parse()
-	conf.Server.Address = *address
-	conf.Server.Port = *port
-	conf.Location.GlobalDir = *globalDir
-	conf.Location.DataDir = *dataDir
-	conf.Location.ConfigDir = *configDir
-	conf.Prod = *prod
-	conf.Debug = *debug
-	return conf
+	config.Server.Port = *port
+	config.Location.GlobalDir = *globalDir
+	config.Location.DataDir = *dataDir
+	config.Location.ConfigDir = *configDir
+	config.Prod = *prod
+	config.Debug = *debug
+	return config
 }
 
 func (conf *Configuration) GetAbsDataDir() string {

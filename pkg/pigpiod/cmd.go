@@ -8,11 +8,12 @@ import (
 )
 
 type Cmd struct {
-	cmd  uint32
-	p1   uint32
-	p2   uint32
-	p3   uint32
-	data []byte
+	cmd       uint32
+	p1        uint32
+	p2        uint32
+	p3        uint32
+	extension uint32
+	data      []byte
 }
 
 var endianess = binary.LittleEndian
@@ -31,6 +32,9 @@ func (c Cmd) ExecuteRes(stream io.ReadWriter) (Cmd, error) {
 	}
 	if err := binary.Write(buf, endianess, c.p3); err != nil {
 		return c, fmt.Errorf("failed to encode data: %w", err)
+	}
+	if err := binary.Write(buf, endianess, c.extension); err != nil {
+		return c, fmt.Errorf("failed to encode extension: %w", err)
 	}
 	if len(c.data) > 0 {
 		if _, err := buf.Write(c.data); err != nil {

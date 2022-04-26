@@ -1,10 +1,8 @@
 package outputs
 
 import (
-	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/numbers"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/types"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 type BulkWrite struct {
@@ -20,10 +18,9 @@ func (inst *Outputs) BulkWrite(ctx *gin.Context) {
 	}
 	for _, io := range body {
 		writeValue := types.ToFloat64(io.Value)
-		inst.Value = numbers.Scale(writeValue, 0, 100, 0, 1)
+		inst.Value = setWriteScale(writeValue)
 		inst.valueOriginal = writeValue
-		//inst.IONum = io.IONum
-		time.Sleep(300 * time.Millisecond)
+		inst.IONum = io.IONum
 		write, err := inst.write()
 		if err != nil {
 			reposeHandler(write, err, ctx)
