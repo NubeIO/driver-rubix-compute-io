@@ -23,7 +23,7 @@ func main() {
 
 	router := gin.Default()
 
-	ip := "192.168.15.191" //used for pig-io
+	ip := "0.0.0.0" //used for pig-io
 
 	output := &outputs.Outputs{
 		TestMode:   conf.Debug,
@@ -31,7 +31,7 @@ func main() {
 		DevicePort: 8888,
 	}
 	input := &inputs.Inputs{
-		TestMode:   true,
+		TestMode:   false,
 		DeviceIP:   ip,
 		DevicePort: 8888,
 	}
