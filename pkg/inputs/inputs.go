@@ -75,7 +75,8 @@ func (inst *Inputs) ReadAll(ctx *gin.Context) {
 			reposeHandler(nil, errors.New("failed to read i2c"), ctx)
 			return
 		}
-
+		data := inst.DecodeData(bytes)
+		reposeHandler(data, nil, ctx)
 		//ip := inst.getIP()
 		//ct, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		//defer cancel()
