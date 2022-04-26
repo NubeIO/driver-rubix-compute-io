@@ -1,3 +1,7 @@
+## [v0.0.3](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.3) (2022-04-26)
+
+- updated to pigpio
+
 ## [v0.0.2](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.2) (2022-04-22)
 
 - Tadded bulk write
