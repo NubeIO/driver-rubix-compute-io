@@ -8,8 +8,8 @@ import (
 
 type Configuration struct {
 	Server struct {
-		Address string
-		Port    int `default:"5001"`
+		Address string `default:"0.0.0.0"`
+		Port    int    `default:"5001"`
 	}
 	Location struct {
 		GlobalDir string `default:"./"`
