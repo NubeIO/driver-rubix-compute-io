@@ -100,10 +100,10 @@ func SupportsPWM(strut interface{}, ioNum string) (exist bool, pin int, err erro
 }
 
 func (inst *Outputs) getIP() (out string) {
-	ip := "192.168.15.191"
+	ip := "0.0.0.0"
 	port := 8888
 	if inst.DeviceIP != "" {
-		ip = ip
+		ip = inst.DeviceIP
 	}
 	if inst.DevicePort != 0 {
 		port = inst.DevicePort
