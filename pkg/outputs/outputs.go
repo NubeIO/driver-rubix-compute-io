@@ -103,7 +103,7 @@ func (inst *Outputs) getIP() (out string) {
 	ip := "0.0.0.0"
 	port := 8888
 	if inst.DeviceIP != "" {
-		ip = inst.DeviceIP
+		ip = "127.0.0.1"
 	}
 	if inst.DevicePort != 0 {
 		port = inst.DevicePort
