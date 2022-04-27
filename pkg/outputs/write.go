@@ -1,11 +1,10 @@
 package outputs
 
 import (
-	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/nils"
+	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/common"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/numbers"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/types"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func setWriteScale(in float64) (out float64) {
@@ -16,18 +15,24 @@ func setWriteScale(in float64) (out float64) {
 func (inst *Outputs) Write(ctx *gin.Context) {
 	body, err := getBody(ctx)
 	if err != nil {
-		reposeHandler(nil, err, ctx)
+		common.ReposeHandler(nil, err, ctx)
 		return
 	}
 	inst.IONum = body.IONum
 	inst.valueOriginal = body.Value
 	inst.Value = setWriteScale(body.Value)
-	if nils.BoolIsNil(body.Debug) {
-		inst.TestMode = true
-	}
-	time.Sleep(50 * time.Millisecond)
 	ok, err := inst.write()
-	reposeHandler(ok, err, ctx)
+	common.ReposeHandler(ok, err, ctx)
+}
+
+func (inst *Outputs) WriteOne(ctx *gin.Context) {
+	val := resolveValue(ctx)
+	writeValue := types.ToFloat64(val)
+	inst.Value = setWriteScale(writeValue)
+	inst.valueOriginal = writeValue
+	inst.IONum = resolveIONum(ctx)
+	ok, err := inst.write()
+	common.ReposeHandler(ok, err, ctx)
 }
 
 func (inst *Outputs) WriteAll(ctx *gin.Context) {
@@ -40,9 +45,9 @@ func (inst *Outputs) WriteAll(ctx *gin.Context) {
 		inst.IONum = io
 		write, err := inst.write()
 		if err != nil {
-			reposeHandler(write, err, ctx)
+			common.ReposeHandler(write, err, ctx)
 			return
 		}
 	}
-	reposeHandler(true, nil, ctx)
+	common.ReposeHandler(true, nil, ctx)
 }

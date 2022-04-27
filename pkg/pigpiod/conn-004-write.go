@@ -6,7 +6,7 @@ func (c *Conn) WriteOn(gpio int) error {
 		p1:  uint32(gpio),
 		p2:  uint32(LevelHigh),
 	}
-	_, err := cmd.ExecuteRes(c.tcp)
+	_, err := cmd.ExecuteRes(c.Tcp)
 	if err != nil {
 		return err
 	}
@@ -19,7 +19,7 @@ func (c *Conn) WriteOff(gpio int) error {
 		p1:  uint32(gpio),
 		p2:  uint32(LevelLow),
 	}
-	_, err := cmd.ExecuteRes(c.tcp)
+	_, err := cmd.ExecuteRes(c.Tcp)
 	if err != nil {
 		return err
 	}

@@ -6,7 +6,7 @@ func (c *Conn) PRS(gpio int, value uint32) (uint32, error) {
 		p1:  uint32(gpio),
 		p2:  value,
 	}
-	res, err := cmd.ExecuteRes(c.tcp)
+	res, err := cmd.ExecuteRes(c.Tcp)
 	if err != nil {
 		return res.p2, err
 	}

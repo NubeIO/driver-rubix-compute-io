@@ -15,7 +15,7 @@ func (c *Conn) HardwarePWM(gpio int, dutyCycle int) error {
 		p3:        4,
 		extension: uint32(dutyCycle),
 	}
-	_, err := cmd.ExecuteRes(c.tcp)
+	_, err := cmd.ExecuteRes(c.Tcp)
 	if err != nil {
 		return err
 	}
@@ -28,7 +28,7 @@ func (c *Conn) PWMRaw(gpio int, dutyCycle uint32) error {
 		p1:  uint32(gpio),
 		p2:  dutyCycle,
 	}
-	_, err := cmd.ExecuteRes(c.tcp)
+	_, err := cmd.ExecuteRes(c.Tcp)
 	if err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func (c *Conn) PWM(gpio int, dutyCycle int) error {
 		return fmt.Errorf("dutyCycle=%v out of range [0-100]", dutyCycle)
 	}
 
-	rMax, found := c.dutyCycleRanges[gpio]
+	rMax, found := c.DutyCycleRanges[gpio]
 	if !found {
 		res, err := c.PRRG(gpio)
 		if err != nil {

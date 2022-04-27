@@ -1,6 +1,7 @@
 package outputs
 
 import (
+	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/common"
 	"github.com/NubeIO/nubeio-rubix-lib-helpers-go/pkg/types"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,7 @@ type BulkWrite struct {
 func (inst *Outputs) BulkWrite(ctx *gin.Context) {
 	body, err := getBodyBulk(ctx)
 	if err != nil {
-		reposeHandler(false, err, ctx)
+		common.ReposeHandler(false, err, ctx)
 		return
 	}
 	for _, io := range body {
@@ -23,10 +24,10 @@ func (inst *Outputs) BulkWrite(ctx *gin.Context) {
 		inst.IONum = io.IONum
 		write, err := inst.write()
 		if err != nil {
-			reposeHandler(write, err, ctx)
+			common.ReposeHandler(write, err, ctx)
 			return
 		}
 	}
-	reposeHandler(true, nil, ctx)
+	common.ReposeHandler(true, nil, ctx)
 	return
 }

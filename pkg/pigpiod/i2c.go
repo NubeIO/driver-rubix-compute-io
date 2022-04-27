@@ -8,7 +8,7 @@ func (c *Conn) InitI2c(busAddr, device int) (handel uint32, err error) {
 		p1:  uint32(busAddr),
 		p2:  uint32(device),
 	}
-	res, err := cmd.ExecuteRes(c.tcp)
+	res, err := cmd.ExecuteRes(c.Tcp)
 	return res.p3, err
 }
 
@@ -17,7 +17,7 @@ func (c *Conn) CloseI2c(handel int) (err error) {
 		cmd: 55,
 		p1:  uint32(handel),
 	}
-	_, err = cmd.ExecuteRes(c.tcp)
+	_, err = cmd.ExecuteRes(c.Tcp)
 	return err
 }
 
@@ -30,7 +30,7 @@ func (c *Conn) ReadI2c(handel, register, length int) ([]byte, error) {
 		p2:  uint32(register),
 		p3:  uint32(length),
 	}
-	res, err := cmd.ExecuteResData(c.tcp)
+	res, err := cmd.ExecuteResData(c.Tcp)
 	return res.data, err
 }
 
@@ -45,6 +45,6 @@ func (c *Conn) WriteI2c(handel, busAddr, register int) ([]byte, error) {
 		p2:  uint32(busAddr),
 		p3:  uint32(register),
 	}
-	res, err := cmd.ExecuteResData(c.tcp)
+	res, err := cmd.ExecuteResData(c.Tcp)
 	return res.data, err
 }

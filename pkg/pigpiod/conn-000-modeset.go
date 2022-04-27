@@ -6,7 +6,7 @@ func (c *Conn) ModeSet(gpio int, mode GpioMode) error {
 		p1:  uint32(gpio),
 		p2:  uint32(mode),
 	}
-	_, err := cmd.ExecuteRes(c.tcp)
+	_, err := cmd.ExecuteRes(c.Tcp)
 	if err != nil {
 		return err
 	}

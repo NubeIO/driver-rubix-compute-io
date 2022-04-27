@@ -30,16 +30,13 @@ func main() {
 	input := &inputs.Inputs{
 		TestMode: conf.Debug,
 	}
-	err := output.Init()
-	if err != nil {
-		log.Errorln("rubix.io.outputs.main() failed to init outputs")
-	}
-	err = input.Init()
+	err := input.Init()
 	if err != nil {
 		log.Errorln("rubix.io.outputs.main() failed to init inputs")
 	}
 
 	router.POST("/api/outputs", output.Write)
+	router.GET("/api/outputs/:io/:value", output.WriteOne)
 	router.POST("/api/outputs/bulk", output.BulkWrite)
 	router.GET("/api/outputs/all/:value", output.WriteAll)
 	router.GET("/api/inputs/all", input.ReadAll)

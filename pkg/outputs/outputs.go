@@ -7,6 +7,7 @@ import (
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/pigpiod"
 	log "github.com/sirupsen/logrus"
 	"reflect"
+	"sync"
 	"time"
 )
 
@@ -20,6 +21,7 @@ type Outputs struct {
 	SupportsPWM   bool
 	DeviceIP      string
 	DevicePort    int
+	mutex         sync.RWMutex
 }
 
 /*
@@ -62,7 +64,6 @@ var OutputMaps = struct {
 type Body struct {
 	IONum string  `json:"io_num"`
 	Value float64 `json:"value"`
-	Debug *bool   `json:"debug"`
 }
 
 func ioExists(strut interface{}, item string) (exist bool, err error) {
@@ -126,23 +127,28 @@ func (inst *Outputs) logWrite(asDo, doValue bool) {
 	}
 }
 
-func (inst *Outputs) write() (ok bool, err error) {
+func (inst *Outputs) write() (out Body, err error) {
+	inst.mutex.Lock()
+	defer inst.mutex.Unlock()
 	var val = inst.Value * 1000000
 	io := inst.IONum
+	out.IONum = inst.IONum
+	out.Value = inst.valueOriginal
 	exists, err := ioExists(OutputMaps, io)
 	if !exists || err != nil {
-		return false, errors.New("IO-number is not valid")
+		return out, errors.New("IO-number is not valid")
 	}
 	isPWM, pin, err := SupportsPWM(OutputMaps, io)
 	if !exists || err != nil {
-		return false, errors.New("error is validating if UO is a PWM")
+		return out, errors.New("error is validating if UO is a PWM")
 	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	c, err := pigpiod.Connect(ctx, inst.getIP())
 	if err != nil {
-		return false, err
+		return out, err
 	}
 	defer c.Close()
 
@@ -150,39 +156,28 @@ func (inst *Outputs) write() (ok bool, err error) {
 		inst.logWrite(false, false)
 		err := c.HardwarePWM(pin, int(val))
 		if err != nil {
-			return false, err
+			return out, err
 		}
 
 	} else { //WRITE on/off
 		if inst.valueOriginal > 0 {
 			inst.logWrite(true, true)
+			out.Value = 1
 			err = c.WriteOn(pin)
 			if err != nil {
-				return false, err
+				return out, err
 			}
 		} else {
 			inst.logWrite(true, false)
+			out.Value = 0
 			err = c.WriteOff(pin)
 			if err != nil {
-				return false, err
+				return out, err
 			}
 		}
 
 	}
-	err = c.Close()
-	if err != nil {
-		return false, err
-	}
-	return true, nil
-}
-
-func (inst *Outputs) Init() error {
-	if inst.TestMode {
-
-	} else {
-
-	}
-	return nil
+	return out, nil
 }
 
 type Message struct {

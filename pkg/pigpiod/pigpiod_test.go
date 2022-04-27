@@ -20,10 +20,8 @@ func TestCommands(*testing.T) {
 	}
 	defer c.Close()
 
-	busInst, err := c.InitI2c(1, 0x33)
-
-	write, err := c.WriteI2c(int(busInst), 0x33, 0xF)
-	fmt.Println(write, err)
+	busInst, err := c.Read(23)
+	fmt.Println(busInst, err)
 	//d, err := c.ReadI2c(int(busInst), 0xF, 16)
 	//ins := &inputs.Inputs{}
 	//data := ins.DecodeData(d)

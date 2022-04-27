@@ -5,7 +5,7 @@ func (c *Conn) Read(gpio int) (Level, error) {
 		cmd: 3,
 		p1:  uint32(gpio),
 	}
-	res, err := cmd.ExecuteRes(c.tcp)
+	res, err := cmd.ExecuteRes(c.Tcp)
 	if err != nil {
 		return LevelLow, err
 	}

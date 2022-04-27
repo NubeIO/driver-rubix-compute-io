@@ -12,19 +12,23 @@ func Connect(ctx context.Context, address string) (*Conn, error) {
 		return nil, err
 	}
 	c := Conn{
-		tcp:             tcp,
-		dutyCycleRanges: make(map[int]uint32),
+		Tcp:             tcp,
+		DutyCycleRanges: make(map[int]uint32),
 	}
 	return &c, nil
 }
 
 type Conn struct {
-	tcp             net.Conn
-	dutyCycleRanges map[int]uint32
+	Tcp             net.Conn
+	DutyCycleRanges map[int]uint32
+}
+
+func New(c *Conn) *Conn {
+	return c
 }
 
 func (c *Conn) Close() error {
-	return c.tcp.Close()
+	return c.Tcp.Close()
 }
 
 type GpioMode uint32
