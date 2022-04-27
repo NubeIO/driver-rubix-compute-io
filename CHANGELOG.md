@@ -1,3 +1,7 @@
+## [v0.0.5](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.5) (2022-04-26)
+
+- clean up of code
+
 ## [v0.0.4](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.4) (2022-04-26)
 
 - fix bug on hardware PWM
