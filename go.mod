@@ -2,9 +2,11 @@ module github.com/NubeIO/nubeio-rubix-app-pi-gpio-go
 
 go 1.18
 
+//replace github.com/NubeIO/nubeio-rubix-lib-helpers-go => /home/aidan/code/go/nube/nubeio-rubix-lib-helpers-go
+//replace github.com/NubeIO/nubeio-rubix-lib-models-go => /home/aidan/code/go/nube/nubeio-rubix-lib-models-go
 require (
 	github.com/NubeIO/configor v0.0.3
-	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.6
+	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7
 	github.com/d2r2/go-i2c v0.0.0-20191123181816-73a8a799d6bc
 	github.com/gin-gonic/gin v1.7.7
 	github.com/sirupsen/logrus v1.8.1

@@ -5,6 +5,7 @@ import (
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/config"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/inputs"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/outputs"
+	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/ping"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -23,6 +24,7 @@ func main() {
 
 	router := gin.Default()
 	ip := conf.Server.Address
+	pings := &ping.Ping{}
 	output := &outputs.Outputs{
 		DeviceIP:   ip,
 		DevicePort: 8888,
@@ -34,7 +36,7 @@ func main() {
 	if err != nil {
 		log.Errorln("rubix.io.outputs.main() failed to init inputs")
 	}
-
+	router.GET("/api/system/ping", pings.Ping)
 	router.POST("/api/outputs", output.Write)
 	router.GET("/api/outputs/:io/:value", output.WriteOne)
 	router.POST("/api/outputs/bulk", output.BulkWrite)
