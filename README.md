@@ -86,6 +86,7 @@ sudo pigpiod
 `/lib/systemd/system/pigpiod.service`
 
 ```
+sudo systemctl enable pigpiod
 sudo systemctl edit --full pigpiod
 sudo systemctl reload-or-restart pigpiod
 ```
