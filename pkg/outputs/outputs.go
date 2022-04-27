@@ -100,10 +100,10 @@ func SupportsPWM(strut interface{}, ioNum string) (exist bool, pin int, err erro
 }
 
 func (inst *Outputs) getIP() (out string) {
-	ip := "0.0.0.0"
+	ip := "127.0.0.1"
 	port := 8888
 	if inst.DeviceIP != "" {
-		ip = "raspberrypi.local"
+		ip = "127.0.0.1"
 	}
 	if inst.DevicePort != 0 {
 		port = inst.DevicePort
