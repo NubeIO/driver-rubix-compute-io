@@ -17,10 +17,10 @@ type Inputs struct {
 type inputsMap struct {
 	IoNum   string  `json:"io_num"`
 	Raw     uint16  `json:"raw"`
-	Temp    float64 `json:"temp_10_k"`
-	Volt    float64 `json:"volt"`
+	Temp    float64 `json:"thermistor_10k_type_2"`
+	Volt    float64 `json:"voltage_dc"`
 	Current float64 `json:"current"`
-	Bool    float64 `json:"bool"`
+	Bool    float64 `json:"digital"`
 }
 
 type Data struct {
