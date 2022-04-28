@@ -104,7 +104,7 @@ Type=forking
 WantedBy=multi-user.target
 ```
 
-## enable hardware PWM
+## enable hardware PWM (UO3 and UO6 only)
 
 ```
 sudo nano /boot/config.txt
