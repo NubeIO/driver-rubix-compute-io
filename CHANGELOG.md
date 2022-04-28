@@ -1,3 +1,7 @@
+## [v0.0.8](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.8) (2022-04-28)
+
+- added bulk api
+
 ## [v0.0.7](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.7) (2022-04-27)
 
 - update inputs return body
