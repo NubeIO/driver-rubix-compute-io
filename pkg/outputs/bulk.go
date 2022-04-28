@@ -7,14 +7,18 @@ import (
 )
 
 type BulkWrite struct {
-	IONum string  `json:"IONum"`
-	Value float64 `json:"value"`
+	IONum string `json:"io_num"`
+	Value int    `json:"value"`
+}
+
+type BulkResponse struct {
+	Ok bool `json:"ok"`
 }
 
 func (inst *Outputs) BulkWrite(ctx *gin.Context) {
 	body, err := getBodyBulk(ctx)
 	if err != nil {
-		common.ReposeHandler(false, err, ctx)
+		common.ReposeHandler(nil, err, ctx)
 		return
 	}
 	for _, io := range body {
@@ -22,12 +26,13 @@ func (inst *Outputs) BulkWrite(ctx *gin.Context) {
 		inst.Value = setWriteScale(writeValue)
 		inst.valueOriginal = writeValue
 		inst.IONum = io.IONum
-		write, err := inst.write()
+		_, err := inst.write()
 		if err != nil {
-			common.ReposeHandler(write, err, ctx)
+			common.ReposeHandler(nil, err, ctx)
 			return
 		}
 	}
-	common.ReposeHandler(true, nil, ctx)
+	res := &BulkResponse{Ok: true}
+	common.ReposeHandler(res, nil, ctx)
 	return
 }
