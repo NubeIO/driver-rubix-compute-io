@@ -15,6 +15,7 @@ type Inputs struct {
 }
 
 type inputsMap struct {
+	IoNum   string  `json:"io_num"`
 	Raw     uint16  `json:"raw"`
 	Temp    float64 `json:"temp_10_k"`
 	Volt    float64 `json:"volt"`
@@ -134,6 +135,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI1.IoNum = "UI1"
 			inputs.UI1.Raw = data
 			inputs.UI1.Temp = decodeTemp
 			inputs.UI1.Volt = voltage
@@ -146,6 +148,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI2.IoNum = "UI2"
 			inputs.UI2.Raw = data
 			inputs.UI2.Temp = decodeTemp
 			inputs.UI2.Volt = voltage
@@ -158,6 +161,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI3.IoNum = "UI3"
 			inputs.UI3.Raw = data
 			inputs.UI3.Temp = decodeTemp
 			inputs.UI3.Volt = voltage
@@ -169,6 +173,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI4.IoNum = "UI4"
 			inputs.UI4.Raw = data
 			inputs.UI4.Temp = decodeTemp
 			inputs.UI4.Volt = voltage
@@ -180,6 +185,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI5.IoNum = "UI5"
 			inputs.UI5.Raw = data
 			inputs.UI5.Temp = decodeTemp
 			inputs.UI5.Volt = voltage
@@ -191,6 +197,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI6.IoNum = "UI6"
 			inputs.UI6.Raw = data
 			inputs.UI6.Temp = decodeTemp
 			inputs.UI6.Volt = voltage
@@ -202,6 +209,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI7.IoNum = "UI7"
 			inputs.UI7.Raw = data
 			inputs.UI7.Temp = decodeTemp
 			inputs.UI7.Volt = voltage
@@ -213,6 +221,7 @@ func (inst *Inputs) DecodeData(bytes []byte) *Data {
 			decodeBool := getBool(data)
 			decodeTemp := getTemp(data)
 			decodeAmps := getCurrent(data)
+			inputs.UI8.IoNum = "UI8"
 			inputs.UI8.Raw = data
 			inputs.UI8.Temp = decodeTemp
 			inputs.UI8.Volt = voltage
