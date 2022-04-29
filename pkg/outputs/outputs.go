@@ -128,8 +128,6 @@ func (inst *Outputs) logWrite(asDo, doValue bool) {
 }
 
 func (inst *Outputs) write() (out Body, err error) {
-	inst.mutex.Lock()
-	defer inst.mutex.Unlock()
 	var val = inst.Value * 1000000
 	io := inst.IONum
 	out.IONum = inst.IONum
@@ -141,6 +139,9 @@ func (inst *Outputs) write() (out Body, err error) {
 	isPWM, pin, err := SupportsPWM(OutputMaps, io)
 	if !exists || err != nil {
 		return out, errors.New("error is validating if UO is a PWM")
+	}
+	if inst.TestMode {
+		return out, nil
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

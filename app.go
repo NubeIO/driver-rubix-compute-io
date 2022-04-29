@@ -26,6 +26,7 @@ func main() {
 	ip := conf.Server.Address
 	pings := &ping.Ping{}
 	output := &outputs.Outputs{
+		TestMode:   conf.Debug,
 		DeviceIP:   ip,
 		DevicePort: 8888,
 	}
