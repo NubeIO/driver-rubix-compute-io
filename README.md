@@ -104,3 +104,36 @@ Type=forking
 WantedBy=multi-user.target
 ```
 
+## enable hardware PWM (UO3 and UO6 only)
+
+```
+sudo nano /boot/config.txt
+```
+
+add this in
+
+```
+dtoverlay=pwm-2chan
+```
+
+On the Raspberry Pi, add dtoverlay=pwm-2chan to /boot/config.txt. This defaults to GPIO_18 as the pin for PWM0 and GPIO_19 as the pin for PWM1.
+Alternatively, you can change GPIO_18 to GPIO_12 and GPIO_19 to GPIO_13 using dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4.
+Reboot your Raspberry Pi.
+You can check everything is working on running lsmod | grep pwm and looking for pwm_bcm2835
+
+
+## fix the 485 on the rubix-io
+
+https://www.instructables.com/Raspberry-PI-3-Enable-Serial-Communications-to-Tty/
+
+the bluthooth needs to be disabled on the PI
+
+```
+sudo nano /boot/config.txt
+```
+
+add this in
+
+```
+dtoverlay=disable-bt
+```
