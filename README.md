@@ -2,7 +2,7 @@
 
 ## cmd/cli usage
 
- see 
+ see https://github.com/NubeIO/nubeio-rubix-lib-rest-go/tree/master/pkg/nube/rubixio/cmd#rubix-io-rest-client
 
 ## to start
 
