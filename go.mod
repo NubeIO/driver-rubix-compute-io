@@ -4,7 +4,7 @@ go 1.18
 
 //replace github.com/NubeIO/nubeio-rubix-lib-helpers-go => /home/aidan/code/go/nube/nubeio-rubix-lib-helpers-go
 //replace github.com/NubeIO/nubeio-rubix-lib-models-go => /home/aidan/code/go/nube/nubeio-rubix-lib-models-go
-replace github.com/NubeIO/nubeio-rubix-lib-rest-go => /home/aidan/code/go/nube/nubeio-rubix-lib-rest-go
+//replace github.com/NubeIO/nubeio-rubix-lib-rest-go => /home/aidan/code/go/nube/nubeio-rubix-lib-rest-go
 
 require (
 	github.com/NubeIO/configor v0.0.3
@@ -18,7 +18,7 @@ require (
 )
 
 require (
-	github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.6
+	github.com/NubeIO/nubeio-rubix-lib-rest-go v1.0.7
 	github.com/spf13/cobra v1.4.0
 )
 
