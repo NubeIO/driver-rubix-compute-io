@@ -1,14 +1,61 @@
 # nubeio-rubix-lib-pi-gpio-go
 
+## cmd/cli usage
+
+### start the app
+
+#### start the app in test mode
+
+start the app first in debug mode, this will load dummy data
+
+```
+go run app.go -debug=true
+```
+
+#### start the app in normal mode
+
+this will only work when this is running on the rubix-io
+
+```
+go run app.go -debug=false
+```
+
+usage of cmd app
+
+```
+cd cmd
+go run main.go --help
+```
+
+### ping
+
+```
+go run main.go ping --ip=0.0.0.0 --port=5001 
+```
+
+### read all
+
+```
+go run main.go read --ip=192.168.15.10 --port=5001
+```
+
+### write one
+
+```
+go run main.go write --ip=0.0.0.0 --port=5001 --point=UO1 --value=100
+```
+
 ## to start
+
 Needs to run as root for the PWMs to work
+
 ```
 go build app.go && sudo ./app
 ```
 
 ## api
 
-### write one as GET (this should just be used for the devloper)
+### write one as GET (this should just be used for the developer)
 value from 0-100, for the 2x DOs 0=off 100=on
 
 GET
