@@ -1,3 +1,9 @@
+# CHANGELOG
+
+## [v0.1.0](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.9) (2022-08-09)
+
+- Make that app compatible with rubix-service v1.20.0 (breaking change)
+
 ## [v0.0.9](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.0.9) (2022-05-02)
 
 - redo body on bulk api
