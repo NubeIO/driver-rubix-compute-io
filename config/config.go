@@ -39,14 +39,15 @@ func CreateApp() *Configuration {
 
 func (conf *Configuration) Parse() *Configuration {
 	port := flag.Int("p", 5001, "Port")
-	globalDir := flag.String("g", "./", "Global Directory")
+	rootDir := flag.String("r", "./", "Root Directory")
+	appDir := flag.String("a", "./", "App Directory")
 	dataDir := flag.String("d", "data", "Data Directory")
 	configDir := flag.String("c", "config", "Config Directory")
 	prod := flag.Bool("prod", false, "Deployment Mode")
 	debug := flag.Bool("debug", false, "test mode")
 	flag.Parse()
 	config.Server.Port = *port
-	config.Location.GlobalDir = *globalDir
+	conf.Location.GlobalDir = path.Join(*rootDir, *appDir)
 	config.Location.DataDir = *dataDir
 	config.Location.ConfigDir = *configDir
 	config.Prod = *prod
