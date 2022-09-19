@@ -26,7 +26,7 @@ func main() {
 	router := gin.Default()
 	ip := conf.Server.Address
 	pings := &ping.Ping{}
-	testMod := false
+	testMod := true
 	output := &outputs.Outputs{
 		TestMode:   testMod,
 		DeviceIP:   ip,
@@ -46,7 +46,7 @@ func main() {
 	router.GET("/api/outputs/all/:value", output.WriteAll)
 
 	inputLoop := runner.NewRunner(&runner.InputRunner{
-		Enable:      true,
+		Enable:      false,
 		TestMode:    testMod,
 		LoopDelayMs: 0,
 	})
