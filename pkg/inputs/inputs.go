@@ -57,6 +57,28 @@ func (inst *Inputs) Init() error {
 	return nil
 }
 
+func (inst *Inputs) Read(testMode bool) (*Data, error) {
+	testBytes := []byte{248, 182, 248, 176, 248, 168, 248, 184, 248, 174, 248, 178, 248, 177, 248, 177}
+	if testMode {
+		return inst.DecodeData(testBytes), nil
+
+	} else {
+		var err error
+		i2, err = i2c.NewI2C(0x33, 1)
+		if err != nil {
+			log.Errorln("rubix-io.inputs.failed.ReadAll() failed to open i2c")
+			return nil, err
+		}
+
+		bytes, _, err := i2.ReadRegBytes(0xF, 16)
+		if err != nil {
+			log.Errorln("rubix-io.inputs.failed.ReadAll() failed to read i2c")
+			return nil, err
+		}
+		return inst.DecodeData(bytes), nil
+	}
+}
+
 func (inst *Inputs) ReadAll(ctx *gin.Context) {
 	testBytes := []byte{248, 182, 248, 176, 248, 168, 248, 184, 248, 174, 248, 178, 248, 177, 248, 177}
 	if inst.TestMode {

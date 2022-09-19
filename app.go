@@ -6,6 +6,7 @@ import (
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/inputs"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/outputs"
 	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/ping"
+	"github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/pkg/runner"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -25,13 +26,14 @@ func main() {
 	router := gin.Default()
 	ip := conf.Server.Address
 	pings := &ping.Ping{}
+	testMod := false
 	output := &outputs.Outputs{
-		TestMode:   conf.Debug,
+		TestMode:   testMod,
 		DeviceIP:   ip,
 		DevicePort: 8888,
 	}
 	input := &inputs.Inputs{
-		TestMode: conf.Debug,
+		TestMode: testMod,
 	}
 	err := input.Init()
 	if err != nil {
@@ -42,11 +44,21 @@ func main() {
 	router.GET("/api/outputs/:io/:value", output.WriteOne)
 	router.POST("/api/outputs/bulk", output.BulkWrite)
 	router.GET("/api/outputs/all/:value", output.WriteAll)
-	router.GET("/api/inputs/all", input.ReadAll)
+
+	inputLoop := runner.NewRunner(&runner.InputRunner{
+		Enable:      true,
+		TestMode:    testMod,
+		LoopDelayMs: 0,
+	})
+
+	if !inputLoop.Enable {
+		router.GET("/api/inputs/all", input.ReadAll)
+	}
+
+	go inputLoop.Runner()
 
 	port := conf.Server.Port
 	addr := fmt.Sprintf(":%d", port)
-
 	server := &http.Server{
 		Addr:    addr,
 		Handler: router,
