@@ -32,6 +32,7 @@ func main() {
 		DeviceIP:   ip,
 		DevicePort: 8888,
 	}
+
 	input := &inputs.Inputs{
 		TestMode: testMod,
 	}
