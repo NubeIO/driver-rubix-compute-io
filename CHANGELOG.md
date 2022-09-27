@@ -1,5 +1,6 @@
 # CHANGELOG
-## [v0.2.1](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.2.1) (2022-09-24)
+
+## [v0.2.2](https://github.com/NubeIO/nubeio-rubix-app-pi-gpio-go/tree/v0.2.2) (2022-09-24)
 
 - Change the inputs to mqtt (breaking change)
 
